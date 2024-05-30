@@ -280,6 +280,17 @@ function kruize_local_demo_terminate() {
 	echo
 }
 
+function kruize_local_demo_run_load() {
+        echo
+        echo "#######################################"
+        echo "#     Apply the benchmark load        #"
+        echo "#######################################"
+        echo
+	apply_benchmark_load
+	echo "Success! Running the benchmark load for ${LOAD_DURATION} seconds"
+        echo
+}
+
 # Check system configs
 sys_cpu_mem_check
 
@@ -290,8 +301,9 @@ export benchmark_load=0
 export prometheus=0
 export kruize_restart=0
 export start_demo=1
+export LOAD_DURATION=1200
 # Iterate through the commandline options
-while getopts c:i:lprstu: gopts
+while getopts c:i:lprstu:zd gopts
 do
 	case "${gopts}" in
 		c)
@@ -315,16 +327,25 @@ do
 		t)
 			start_demo=0
 			;;
+		z)
+			start_demo=2
+			;;
 		u)
 			KRUIZE_UI_DOCKER_IMAGE="${OPTARG}"
 			;;
+		d)
+			LOAD_DURATION="${OPTARG}"
+			;;
 		*)
 			usage
+			;;
 	esac
 done
 
 if [ ${start_demo} -eq 1 ]; then
 	kruize_local_demo_setup
+elif [ ${start_demo} -eq 2 ]; then
+	kruize_local_demo_run_load
 else
 	kruize_local_demo_terminate
 fi

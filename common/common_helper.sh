@@ -237,7 +237,7 @@ function benchmarks_install() {
 	pushd benchmarks >/dev/null
 		echo "5. Installing TechEmpower (Quarkus REST EASY) benchmark into cluster"
 		pushd techempower >/dev/null
-			kubectl apply -f manifests
+			kubectl apply -f kld_manifests
 			check_err "ERROR: TechEmpower app failed to start, exiting"
 		popd >/dev/null
 	popd >/dev/null
@@ -254,9 +254,9 @@ function apply_benchmark_load() {
 	fi
 
 	echo
-	echo "###################################################################"
-	echo " Starting 20 min background load against the techempower benchmark "
-	echo "###################################################################"
+	echo "##############################################################################"
+	echo " Starting ${LOAD_DURATION}s background load against the techempower benchmark "
+	echo "##############################################################################"
 	echo
 
 	TECHEMPOWER_LOAD_IMAGE="quay.io/kruizehub/tfb_hyperfoil_load:0.25.2"
@@ -269,7 +269,7 @@ function apply_benchmark_load() {
 		TECHEMPOWER_ROUTE=$(oc get route -n ${APP_NAMESPACE} --template='{{range .items}}{{.spec.host}}{{"\n"}}{{end}}')
 	fi
 	# docker run -d --rm --network="host"  ${TECHEMPOWER_LOAD_IMAGE} /opt/run_hyperfoil_load.sh ${TECHEMPOWER_ROUTE} <END_POINT> <DURATION> <THREADS> <CONNECTIONS>
-	docker run -d --rm --network="host"  ${TECHEMPOWER_LOAD_IMAGE} /opt/run_hyperfoil_load.sh ${TECHEMPOWER_ROUTE} queries?queries=20 1200 1024 8096
+	docker run -d --rm --network="host"  ${TECHEMPOWER_LOAD_IMAGE} /opt/run_hyperfoil_load.sh ${TECHEMPOWER_ROUTE} queries?queries=20 ${LOAD_DURATION} 1024 8096
 
 }
 
