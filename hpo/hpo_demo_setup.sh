@@ -138,6 +138,8 @@ function hpo_install() {
 	popd >/dev/null
 	echo "#######################################"
 	echo
+	SERVICE_STATUS_NATIVE=$(ps -u | grep service.py | grep -v grep)
+	echo "SERVICE_STATUS_NATIVE=  ${SERVICE_STATUS_NATIVE=}"
 }
 
 # Function to get the URL to access HPO
@@ -294,7 +296,7 @@ function hpo_start() {
 #  HPO is already running on operate-first. So, no need to install again.
 	if [[ ${CLUSTER_TYPE} != "operate-first" ]]; then
 		 # Installing jsonschema explicitly to debug errors
-		#python3 -m pip install --user --no-cache-dir --force-reinstall -r ./hpo/rest_requirements.txt
+		python3 -m pip install --user --no-cache-dir --force-reinstall -r ./hpo/rest_requirements.txt
 		python3 -m pip install --user --no-cache-dir --force-reinstall optuna
 		python3 -m pip install --user --no-cache-dir --force-reinstall requests
 		python3 -m pip install --user --no-cache-dir --force-reinstall scikit-optimize
@@ -337,6 +339,9 @@ function hpo_terminate() {
 		echo "ERROR: Failed to terminate hpo"
 		echo
 	popd >/dev/null
+	SERVICE_STATUS_NATIVE=$(ps -u | grep service.py | grep -v grep)
+        echo "SERVICE_STATUS_NATIVE=  ${SERVICE_STATUS_NATIVE=}"
+
 }
 
 function hpo_cleanup() {
