@@ -138,8 +138,6 @@ function hpo_install() {
 	popd >/dev/null
 	echo "#######################################"
 	echo
-	SERVICE_STATUS_NATIVE=$(ps -u | grep service.py | grep -v grep)
-	echo "SERVICE_STATUS_NATIVE=  ${SERVICE_STATUS_NATIVE}"
 
 }
 
@@ -167,6 +165,10 @@ function getURL() {
 ## 2. Modifying "Step 3" to run the usecase specific benchmark
 ## Currently, it uses TechEmpower benchmark running in minikube for the demo.
 function hpo_experiments() {
+
+	SERVICE_STATUS_NATIVE=$(ps -ef | grep service.py | grep -v grep)
+        echo "SERVICE_STATUS_NATIVE=  ${SERVICE_STATUS_NATIVE}"
+
 
 	#SEARCHSPACE_JSON="hpo_helpers/tfb_qrh_search_space.json"
 	URL=$(getURL)
@@ -338,7 +340,7 @@ function hpo_terminate() {
 		echo "ERROR: Failed to terminate hpo"
 		echo
 	popd >/dev/null
-	SERVICE_STATUS_NATIVE=$(ps -u | grep service.py | grep -v grep)
+	SERVICE_STATUS_NATIVE=$(ps -ef | grep service.py | grep -v grep)
         echo "SERVICE_STATUS_NATIVE=  ${SERVICE_STATUS_NATIVE=}"
 
 }
