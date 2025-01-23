@@ -138,6 +138,8 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	STARTUP_TIMEOUT=60
         #result=$(curl -o /dev/null -sk -w "%{http_code}\n" "${jobUrl}")
 	curl -k -w "%{http_code}\n" "${jobUrl}"
+	# Introduce some wait before getting the details
+	sleep 30
 
 	while [[ "${JOB_COMPLETE}" == false ]]; do
 		JOB_STATUS=$(curl -sk "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/lastBuild/api/json")

@@ -154,6 +154,7 @@ function getURL() {
 	else
 		if [[ ${CLUSTER_TYPE} == "native" ]] || [[ ${CLUSTER_TYPE} == "docker" ]]; then
 			service_msg="Access REST Service at"
+			cat ${LOGFILE}
 			if grep -q "Access REST Service at" "${LOGFILE}"; then
 				url=`awk '/'"${service_msg}"'/{print $NF}' "${LOGFILE}" | tail -1`
 			else
@@ -351,7 +352,7 @@ function hpo_terminate() {
 	echo
 	pushd hpo >/dev/null
 		./deploy_hpo.sh -t -c ${CLUSTER_TYPE}
-		echo "ERROR: Failed to terminate hpo"
+		#check_err "ERROR: Failed to terminate hpo"
 		echo
 	popd >/dev/null
 	SERVICE_STATUS_NATIVE=$(ps -ef | grep service.py | grep -v grep)
