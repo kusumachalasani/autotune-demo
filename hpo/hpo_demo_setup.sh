@@ -154,10 +154,15 @@ function getURL() {
 	else
 		if [[ ${CLUSTER_TYPE} == "native" ]] || [[ ${CLUSTER_TYPE} == "docker" ]]; then
 			service_msg="Access REST Service at"
+			if grep -q "Access REST Service at" "${LOGFILE}"; then
+				url=`awk '/'"${service_msg}"'/{print $NF}' "${LOGFILE}" | tail -1`
+			else
+				url="http://localhost:8085"
+			fi
 		else
 			service_msg="Access HPO at"
+			url=`awk '/'"${service_msg}"'/{print $NF}' "${LOGFILE}" | tail -1`
 		fi
-		url=`awk '/'"${service_msg}"'/{print $NF}' "${LOGFILE}" | tail -1`
 	fi
 	echo ${url}
 }
