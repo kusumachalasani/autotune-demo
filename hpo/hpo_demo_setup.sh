@@ -139,7 +139,8 @@ function hpo_install() {
 	echo "#######################################"
 	echo
 	SERVICE_STATUS_NATIVE=$(ps -u | grep service.py | grep -v grep)
-	echo "SERVICE_STATUS_NATIVE=  ${SERVICE_STATUS_NATIVE=}"
+	echo "SERVICE_STATUS_NATIVE=  ${SERVICE_STATUS_NATIVE}"
+
 }
 
 # Function to get the URL to access HPO
@@ -184,7 +185,6 @@ function hpo_experiments() {
 	echo "#######################################"
 	echo "Start a new experiment with search space json"
 	## Step 1 : Start a new experiment with provided search space.
-	echo "curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}'"
 	http_response=$(curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}')
 	if [ "$http_response" != "200" ]; then
 		err_exit "Error:" $(cat response.txt)
@@ -204,7 +204,6 @@ function hpo_experiments() {
 		sleep 10
 		HPO_CONFIG=$(curl -LfSs -H 'Accept: application/json' "${URL}"'/experiment_trials?experiment_name='"${ename}"'&trial_number='"${i}")
 		check_err "Error: Issue generating the configuration from HPO."
-		echo ${HPO_CONFIG}
 		echo "${HPO_CONFIG}" > hpo_config.json
 
 		## Step 3: Run the benchmark with HPO config.

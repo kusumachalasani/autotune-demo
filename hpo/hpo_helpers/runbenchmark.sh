@@ -40,6 +40,7 @@ BENCHMARK_LOGFILE="${PWD}/benchmark.log"
 
 cpu_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"cpuRequest\")")
 memory_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"memoryRequest\")")
+jdkoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_jdkoptions(\"hpo_config.json\")")
 envoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_envoptions(\"hpo_config.json\")")
 
 if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
@@ -89,7 +90,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 		      ["MEM_REQ"]="${memory_request}"
 		      ["CPU_LIM"]="${cpu_request}"
 		      ["MEM_LIM"]="${memory_request}"
-		      ["ENV_OPTIONS"]="${envoptions}"
+		      ["ENV_OPTIONS"]="${jdkoptions}"
 		      ["AUTOTUNE_BENCHMARKS_GIT_REPO_URL"]="${AUTOTUNE_BENCHMARKS_GIT_REPO_URL}"
 		      ["AUTOTUNE_BENCHMARKS_GIT_REPO_BRANCH"]="${AUTOTUNE_BENCHMARKS_GIT_REPO_BRANCH}"
 		      ["AUTOTUNE_BENCHMARKS_GIT_REPO_NAME"]="${AUTOTUNE_BENCHMARKS_GIT_REPO_NAME}"
@@ -109,15 +110,24 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	      query=${query%&}
 	      jobUrl="https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/buildWithParameters?$query"
         else
-	      # Construct the job URL
-	      jobUrl="https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/buildWithParameters"
-	      jobUrl="${jobUrl}?token=${JENKINS_SETUP_TOKEN}"
-	      jobUrl="${jobUrl}&BRANCH=${GIT_REPO_COMMIT}"
-	      jobUrl="${jobUrl}&CPU_REQ=${cpu_request}"
-	      jobUrl="${jobUrl}&MEM_REQ=${memory_request}"
-	      jobUrl="${jobUrl}&CPU_LIM=${cpu_request}"
-	      jobUrl="${jobUrl}&MEM_LIM=${memory_request}"
-	      jobUrl="${jobUrl}&ENV_OPTIONS=${envoptions}"
+	      declare -A params
+	      params=(
+		      ["token"]="${JENKINS_SETUP_TOKEN}"
+                      ["BRANCH"]="${GIT_REPO_COMMIT}"
+                      ["JDK_JAVA_OPTIONS"]="${JDK_JAVA_OPTIONS}"
+                      ["ENV_OPTIONS"]="${ENV_OPTIONS}"
+              )
+              # Initialize an empty string for the encoded query
+              query=""
+              # Loop through the parameters and encode each key and value
+              for key in "${!params[@]}"; do
+                      encoded_key=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''$key'''))")
+                      encoded_value=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''${params[$key]}'''))")
+                      query+="${encoded_key}=${encoded_value}&"
+              done
+              # Remove the trailing '&'
+              query=${query%&}
+              jobUrl="https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/buildWithParameters?$query"
 	fi
 
 	# Print the constructed URL (for debugging)
