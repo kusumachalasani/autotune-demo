@@ -183,6 +183,8 @@ function hpo_experiments() {
 
 	#SEARCHSPACE_JSON="hpo_helpers/tfb_qrh_search_space.json"
 	URL=$(getURL)
+	echo "URL is ${URL}"
+	curl ${URL}
 	exp_json=$(cat ${SEARCHSPACE_JSON})
 	if [[ ${exp_json} == "" ]]; then
 		err_exit "Error: Searchspace is empty"
