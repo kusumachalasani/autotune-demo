@@ -1,7 +1,7 @@
 {
     "experiment_name": "first_responder_eap",
     "experiment_id": "fr_eap_1",
-    "total_trials": 100,
+    "total_trials": 2,
     "parallel_trials":1,
     "objective_function": "1000*(125*Throughput)/(25*av_watts)",
     "value_type": "double",
