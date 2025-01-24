@@ -23,6 +23,7 @@ def get_envoptions(hpoconfigjson):
         for item in sstunables
         if item['tunable_name'] not in excluded_tunables
     )
+    ENV_OPTIONS = f'"{ENV_OPTIONS}"' if ENV_OPTIONS else ENV_OPTIONS
     print(str(ENV_OPTIONS))
 
 
@@ -85,5 +86,6 @@ def get_jdkoptions(hpoconfigjson):
                 else:
                     JDK_JAVA_OPTIONS = JDK_JAVA_OPTIONS + " -D" + qtunable + "=" + str(st["tunable_value"])
 
+    JDK_JAVA_OPTIONS = f'"{JDK_JAVA_OPTIONS}"' if JDK_JAVA_OPTIONS else JDK_JAVA_OPTIONS
     print(str(JDK_JAVA_OPTIONS))
 

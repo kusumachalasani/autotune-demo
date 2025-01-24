@@ -13,7 +13,7 @@
             "value_type": "double"
         },
         {
-            "name": "av_watt",
+            "name": "av_watts",
             "value_type": "double"
         }
     ],

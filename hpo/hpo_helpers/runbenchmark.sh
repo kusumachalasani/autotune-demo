@@ -90,7 +90,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 		      ["MEM_REQ"]="${memory_request}"
 		      ["CPU_LIM"]="${cpu_request}"
 		      ["MEM_LIM"]="${memory_request}"
-		      ["ENV_OPTIONS"]="\"${jdkoptions}\""
+		      ["ENV_OPTIONS"]="${jdkoptions}"
 		      ["AUTOTUNE_BENCHMARKS_GIT_REPO_URL"]="${AUTOTUNE_BENCHMARKS_GIT_REPO_URL}"
 		      ["AUTOTUNE_BENCHMARKS_GIT_REPO_BRANCH"]="${AUTOTUNE_BENCHMARKS_GIT_REPO_BRANCH}"
 		      ["AUTOTUNE_BENCHMARKS_GIT_REPO_NAME"]="${AUTOTUNE_BENCHMARKS_GIT_REPO_NAME}"
@@ -114,8 +114,8 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	      params=(
 		      ["token"]="${JENKINS_SETUP_TOKEN}"
                       ["BRANCH"]="${GIT_REPO_COMMIT}"
-                      ["JDK_JAVA_OPTIONS"]="\"${jdkoptions}\""
-                      ["ENV_OPTIONS"]="\"${envoptions}\""
+                      ["JVM_TUNABLES"]="${jdkoptions}"
+                      ["ENV_OPTIONS"]="${envoptions}"
               )
               # Initialize an empty string for the encoded query
               query=""
