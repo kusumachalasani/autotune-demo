@@ -114,8 +114,8 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	      params=(
 		      ["token"]="${JENKINS_SETUP_TOKEN}"
                       ["BRANCH"]="${GIT_REPO_COMMIT}"
-                      ["JDK_JAVA_OPTIONS"]="${JDK_JAVA_OPTIONS}"
-                      ["ENV_OPTIONS"]="${ENV_OPTIONS}"
+                      ["JDK_JAVA_OPTIONS"]="${jdkoptions}"
+                      ["ENV_OPTIONS"]="${envoptions}"
               )
               # Initialize an empty string for the encoded query
               query=""
