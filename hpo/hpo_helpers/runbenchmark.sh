@@ -208,9 +208,9 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			JOB_STATUS=$(curl -sk "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/lastBuild/api/json")
 			JENKINS_RUN_ID=$(echo "$JOB_STATUS" | jq -r '.id')
 			# Get horreum id
-			horreumID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${JENKINS_RUN_ID}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
+			HORREUM_RUNID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${JENKINS_RUN_ID}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
 
-			echo "JOB_STATUS= ${JOB_STATUS} ; JENKINS_RUN_ID= ${JENKINS_RUN_ID} ; horreumID= ${horreumID}"
+			echo "JENKINS_RUN_ID= ${JENKINS_RUN_ID} ; horreumID= ${HORREUM_RUNID}"
 
 			curl -s 'https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues' | jq -r . > output.json
 			echo "outputting horreum json"
