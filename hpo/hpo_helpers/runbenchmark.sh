@@ -90,7 +90,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 		      ["MEM_REQ"]="${memory_request}"
 		      ["CPU_LIM"]="${cpu_request}"
 		      ["MEM_LIM"]="${memory_request}"
-		      ["ENV_OPTIONS"]="${jdkoptions}"
+		      ["ENV_OPTIONS"]="\"${jdkoptions}\""
 		      ["AUTOTUNE_BENCHMARKS_GIT_REPO_URL"]="${AUTOTUNE_BENCHMARKS_GIT_REPO_URL}"
 		      ["AUTOTUNE_BENCHMARKS_GIT_REPO_BRANCH"]="${AUTOTUNE_BENCHMARKS_GIT_REPO_BRANCH}"
 		      ["AUTOTUNE_BENCHMARKS_GIT_REPO_NAME"]="${AUTOTUNE_BENCHMARKS_GIT_REPO_NAME}"
@@ -114,8 +114,8 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	      params=(
 		      ["token"]="${JENKINS_SETUP_TOKEN}"
                       ["BRANCH"]="${GIT_REPO_COMMIT}"
-                      ["JDK_JAVA_OPTIONS"]="${jdkoptions}"
-                      ["ENV_OPTIONS"]="${envoptions}"
+                      ["JDK_JAVA_OPTIONS"]="\"${jdkoptions}\""
+                      ["ENV_OPTIONS"]="\"${envoptions}\""
               )
               # Initialize an empty string for the encoded query
               query=""
@@ -143,8 +143,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	sleep 30
 
 	while [[ "${JOB_COMPLETE}" == false ]]; do
-		##TO DO
-		#Confirm if this the latest job triggered or using the previous one.
+		##TODO Confirm if this the latest job triggered or using the previous one.
 		JOB_STATUS=$(curl -sk "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/lastBuild/api/json")
 		# Validate JSON response
 		if ! echo "$JOB_STATUS" | jq empty; then
