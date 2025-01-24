@@ -28,11 +28,12 @@ CLUSTER_TYPE=$4
 BENCHMARK_SERVER=$5
 BENCHMARK_NAME=$6
 BENCHMARK_RUN_THRU=$7
-JENKINS_MACHINE_NAME=$8
-JENKINS_EXPOSED_PORT=$9
-JENKINS_SETUP_JOB=${10}
-JENKINS_SETUP_TOKEN=${11}
-JENKINS_GIT_REPO_COMMIT=${12}
+BENCHMARK_TIMEOUT=$8
+JENKINS_MACHINE_NAME=$9
+JENKINS_EXPOSED_PORT=${10}
+JENKINS_SETUP_JOB=${11}
+JENKINS_SETUP_TOKEN=${12}
+JENKINS_GIT_REPO_COMMIT=${13}
 
 PY_CMD="python3"
 LOGFILE="${PWD}/hpo.log"
@@ -42,6 +43,10 @@ cpu_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tuna
 memory_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"memoryRequest\")")
 jdkoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_jdkoptions(\"hpo_config.json\")")
 envoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_envoptions(\"hpo_config.json\")")
+
+STARTUP_TIMEOUT=$(BENCHMARK_TIMEOUT * 60 / 5)
+echo "STARTUP_TIMEOUT= ${STARTUP_TIMEOUT}"
+
 
 if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	if [[ ${BENCHMARK_NAME} == "techempower" ]]; then
@@ -135,13 +140,16 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	JOB_START_TIME=$(date +%s%3N)
 	JOB_COMPLETE=false
 	COUNTER=0
-	STARTUP_TIMEOUT=60
+	STARTUP_TIMEOUT=$(BENCHMARK_TIMEOUT * 60 / 5)
+	echo "STARTUP_TIMEOUT= ${STARTUP_TIMEOUT}"
         #result=$(curl -o /dev/null -sk -w "%{http_code}\n" "${jobUrl}")
 	curl -k -w "%{http_code}\n" "${jobUrl}"
 	# Introduce some wait before getting the details
 	sleep 30
 
 	while [[ "${JOB_COMPLETE}" == false ]]; do
+		##TO DO
+		#Confirm if this the latest job triggered or using the previous one.
 		JOB_STATUS=$(curl -sk "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/lastBuild/api/json")
 		# Validate JSON response
 		if ! echo "$JOB_STATUS" | jq empty; then
@@ -151,17 +159,23 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 		JOB_TIMESTAMP=$(echo "$JOB_STATUS" | jq -r '.timestamp // 0')
 		JOB_DURATION=$(echo "$JOB_STATUS" | jq -r '.duration // 0')
 		JOB_RESULT=$(echo "$JOB_STATUS" | jq -r '.result // "UNKNOWN"')
-		if [[ $((JOB_TIMESTAMP + JOB_DURATION)) -gt "${JOBSTART_TIME}" ]] && [[ "$JOB_RESULT" == "SUCCESS" ]]; then
+		if [[ "$JOB_RESULT" == "SUCCESS" ]]; then
 			JOB_COMPLETE=true
+                        break
+		elif [[ "$JOB_RESULT" == "FAILURE" ]]; then
 			break
 		fi
-		if [[ $((JOB_TIMESTAMP + JOB_DURATION)) -gt "$START_TIME" ]] && [[ "$JOB_RESULT" == "FAILURE" ]]; then
-			break
-		fi
-		COUNTER=$((COUNTER + 1))
-		if [ "$COUNTER" -ge "$STARTUP_TIMEOUT" ]; then
-			break
-		fi
+		#if [[ $((JOB_TIMESTAMP + JOB_DURATION)) -gt "${JOBSTART_TIME}" ]] && [[ "$JOB_RESULT" == "SUCCESS" ]]; then
+		#	JOB_COMPLETE=true
+		#	break
+		#fi
+		#if [[ $((JOB_TIMESTAMP + JOB_DURATION)) -gt "$START_TIME" ]] && [[ "$JOB_RESULT" == "FAILURE" ]]; then
+		#	break
+		#fi
+		#COUNTER=$((COUNTER + 1))
+		#if [ "$COUNTER" -ge "$STARTUP_TIMEOUT" ]; then
+		#	break
+		#fi
 		sleep 5
 	done
 

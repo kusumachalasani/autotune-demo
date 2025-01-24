@@ -32,7 +32,7 @@ function usage() {
 	echo "e = disable hpo experiments"
 	echo "benchmark = benchmark to run. Default techempower"
 	echo "searchspace = searchspace json"
-	echo "jenkinsmachine jenkinsport jenkinsjob jenkinstoken jenkinsrepo = jenkins configuration"
+	echo "jenkinsmachine jenkinsport jenkinsjob jenkinstoken jenkinsrepo jenkinsbenchmarktimeout  :JENKINS CONFIGURATION"
 	echo "p = expose prometheus port"
 	exit 1
 }
@@ -183,7 +183,6 @@ function hpo_experiments() {
 
 	#SEARCHSPACE_JSON="hpo_helpers/tfb_qrh_search_space.json"
 	URL=$(getURL)
-	echo "URL is ${URL}"
 	exp_json=$(cat ${SEARCHSPACE_JSON})
 	if [[ ${exp_json} == "" ]]; then
 		err_exit "Error: Searchspace is empty"
@@ -199,9 +198,6 @@ function hpo_experiments() {
 	echo "#######################################"
 	echo "Start a new experiment with search space json"
 	## Step 1 : Start a new experiment with provided search space.
-	#echo "curl -o response.txt -w \"%{http_code}\" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ \"operation\": \"EXP_TRIAL_GENERATE_NEW\",  \"search_space\": '\"${exp_json}\"'}'"
-	##
-	sleep 1
 	echo "curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}'"
 	http_response=$(curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}')
 	if [ "$http_response" != "200" ]; then
@@ -219,10 +215,10 @@ function hpo_experiments() {
 		echo
 		echo "Generate the config for trial ${i}"
 		echo
-		sleep 10
+		sleep 5
 		HPO_CONFIG=$(curl -LfSs -H 'Accept: application/json' "${URL}"'/experiment_trials?experiment_name='"${ename}"'&trial_number='"${i}")
 		check_err "Error: Issue generating the configuration from HPO."
-		echo "${HPO_CONFIG}" > hpo_config.json
+		echo "${HPO_CONFIG}" | tee hpo_config.json
 
 		## Step 3: Run the benchmark with HPO config.
 		## Output of the benchmark should contain objective function result value and status of the benchmark.
@@ -233,7 +229,7 @@ function hpo_experiments() {
 		echo
 		echo "Run the benchmark for trial ${i}"
 		echo
-		BENCHMARK_OUTPUT=$(./hpo_helpers/runbenchmark.sh "hpo_config.json" "${SEARCHSPACE_JSON}" "$i" "${BENCHMARK_CLUSTER}" "${BENCHMARK_SERVER}" "${BENCHMARK_NAME}" "${BENCHMARK_RUN_THRU}" "${JENKINS_MACHINE_NAME}" "${JENKINS_EXPOSED_PORT}" "${JENKINS_SETUP_JOB}" "${JENKINS_SETUP_TOKEN}" "${JENKINS_GIT_REPO_COMMIT}" | tee /dev/tty)
+		BENCHMARK_OUTPUT=$(./hpo_helpers/runbenchmark.sh "hpo_config.json" "${SEARCHSPACE_JSON}" "$i" "${BENCHMARK_CLUSTER}" "${BENCHMARK_SERVER}" "${BENCHMARK_NAME}" "${BENCHMARK_RUN_THRU}" "${JENKINS_BENCHMARK_TIMEOUT}" "${JENKINS_MACHINE_NAME}" "${JENKINS_EXPOSED_PORT}" "${JENKINS_SETUP_JOB}" "${JENKINS_SETUP_TOKEN}" "${JENKINS_GIT_REPO_COMMIT}" | tee /dev/tty)
 		echo ${BENCHMARK_OUTPUT}
 		obj_result=$(echo ${BENCHMARK_OUTPUT} | cut -d "=" -f2 | cut -d " " -f1)
 		trial_state=$(echo ${BENCHMARK_OUTPUT} | cut -d "=" -f3 | cut -d " " -f1)
@@ -389,6 +385,8 @@ BENCHMARK_SERVER="localhost"
 BENCHMARK_RUN_THRU="standalone"
 BENCHMARK_NAME="techempower"
 SEARCHSPACE_JSON="hpo_helpers/tfb_qrh_search_space.json"
+JENKINS_BENCHMARK_TIMEOUT="15" #Timeout after 15mins
+
 # By default we start the demo & experiment and we dont expose prometheus port
 prometheus=0
 hpo_restart=0
@@ -421,6 +419,9 @@ do
                                 ;;
 			searchspace=*)
 				SEARCHSPACE_JSON=${OPTARG#*=}
+				;;
+			jenkinsbenchmarktimeout=*)
+				JENKINS_BENCHMARK_TIMEOUT=${OPTARG#*=}
 				;;
                         *)
                                 ;;
