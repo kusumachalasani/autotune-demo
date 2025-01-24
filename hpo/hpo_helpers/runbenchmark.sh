@@ -135,12 +135,35 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	JOB_START_TIME=$(date +%s%3N)
 	JOB_COMPLETE=false
 	COUNTER=0
-	STARTUP_TIMEOUT=$(BENCHMARK_TIMEOUT * 60 / 5)
-	echo "STARTUP_TIMEOUT= ${STARTUP_TIMEOUT}"
         #result=$(curl -o /dev/null -sk -w "%{http_code}\n" "${jobUrl}")
-	curl -k -w "%{http_code}\n" "${jobUrl}"
-	# Introduce some wait before getting the details
-	sleep 30
+	response=$(curl -k -i -w "%{http_code}\n" "${jobUrl}")
+	location=$(echo "$response" | grep -i "Location:" | awk '{print $2}' | tr -d '\r')
+	queueId=$(basename "$location")
+	echo "queueId= ${queueId}"
+	TIMEOUT=600
+	START_TIME=$(date +%s) 
+	if [ -z "$queueId" ]; then
+		echo "Failed to retrieve queueId. Check if the job was triggered successfully."
+  		#JOB_COMPLETE = "invalid"
+	else
+		while true; do
+			current_time=$(date +%s)
+			elapsed_time=$((current_time - START_TIME))
+			if [ "$elapsed_time" -ge "$TIMEOUT" ]; then
+			    echo "Timed out after 600 seconds. No Run ID available."
+			    #JOB_COMPLETE = "invalid"
+			    break
+		      	fi
+			queue_url="https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/queue/item/$QUEUE_ID/api/json"
+			response=$(curl -k "$queue_url")
+			run_id=$(echo "$response" | jq -r '.executable.number // empty')
+			if [ -n "${run_id}" ]; then
+				echo "run_id is ${run_id}"
+				break;				
+			fi
+			sleep 30
+		done
+	fi
 
 	while [[ "${JOB_COMPLETE}" == false ]]; do
 		##TODO Confirm if this the latest job triggered or using the previous one.
@@ -187,7 +210,11 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			# Get horreum id
 			horreumID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${JENKINS_RUN_ID}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
 
+			echo "JOB_STATUS= ${JOB_STATUS} ; JENKINS_RUN_ID= ${JENKINS_RUN_ID} ; horreumID= ${horreumID}"
+
 			curl -s 'https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues' | jq -r . > output.json
+			echo "outputting horreum json"
+			cat output.json
 			## Calculate objective function result value
 			objfunc_result=`${PY_CMD} -c "import hpo_helpers.getobjfuncresult; hpo_helpers.getobjfuncresult.calcobj(\"${SEARCHSPACE_JSON}\", \"output.json\", \"${OBJFUNC_VARIABLES}\")"`
 		fi
