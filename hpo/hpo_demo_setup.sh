@@ -154,7 +154,6 @@ function getURL() {
 	else
 		if [[ ${CLUSTER_TYPE} == "native" ]] || [[ ${CLUSTER_TYPE} == "docker" ]]; then
 			service_msg="Access REST Service at"
-			cat ${LOGFILE}
 			if grep -q "Access REST Service at" "${LOGFILE}"; then
 				url=`awk '/'"${service_msg}"'/{print $NF}' "${LOGFILE}" | tail -1`
 			else
@@ -165,7 +164,7 @@ function getURL() {
 			url=`awk '/'"${service_msg}"'/{print $NF}' "${LOGFILE}" | tail -1`
 		fi
 	fi
-	echo "url after installation: " ${url}
+	echo "${url}"
 }
 
 ###########################################
@@ -185,7 +184,6 @@ function hpo_experiments() {
 	#SEARCHSPACE_JSON="hpo_helpers/tfb_qrh_search_space.json"
 	URL=$(getURL)
 	echo "URL is ${URL}"
-	#curl ${URL}
 	exp_json=$(cat ${SEARCHSPACE_JSON})
 	if [[ ${exp_json} == "" ]]; then
 		err_exit "Error: Searchspace is empty"
@@ -202,6 +200,9 @@ function hpo_experiments() {
 	echo "Start a new experiment with search space json"
 	## Step 1 : Start a new experiment with provided search space.
 	#echo "curl -o response.txt -w \"%{http_code}\" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ \"operation\": \"EXP_TRIAL_GENERATE_NEW\",  \"search_space\": '\"${exp_json}\"'}'"
+	##
+	sleep 1
+	echo "curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}'"
 	http_response=$(curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}')
 	if [ "$http_response" != "200" ]; then
 		err_exit "Error:" $(cat response.txt)
@@ -312,7 +313,7 @@ function hpo_start() {
 #  HPO is already running on operate-first. So, no need to install again.
 	if [[ ${CLUSTER_TYPE} != "operate-first" ]]; then
 		 # Installing jsonschema explicitly to debug errors
-		python3 -m pip install --user --no-cache-dir --force-reinstall -r ./hpo/rest_requirements.txt
+		#python3 -m pip install --user --no-cache-dir --force-reinstall -r ./hpo/rest_requirements.txt
 		python3 -m pip install --user --no-cache-dir --force-reinstall optuna
 		python3 -m pip install --user --no-cache-dir --force-reinstall requests
 		python3 -m pip install --user --no-cache-dir --force-reinstall scikit-optimize
