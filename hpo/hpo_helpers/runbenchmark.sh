@@ -28,13 +28,12 @@ CLUSTER_TYPE=$4
 BENCHMARK_SERVER=$5
 BENCHMARK_NAME=$6
 BENCHMARK_RUN_THRU=$7
-BENCHMARK_TIMEOUT=$8
-JENKINS_MACHINE_NAME=$9
-JENKINS_EXPOSED_PORT=${10}
-JENKINS_SETUP_JOB=${11}
-JENKINS_SETUP_TOKEN=${12}
-JENKINS_GIT_REPO_COMMIT=${13}
-
+JENKINS_MACHINE_NAME=$8
+JENKINS_EXPOSED_PORT=${9}
+JENKINS_SETUP_JOB=${10}
+JENKINS_SETUP_TOKEN=${11}
+JENKINS_GIT_REPO_COMMIT=${12}
+HORREUM=${13}
 PY_CMD="python3"
 LOGFILE="${PWD}/hpo.log"
 BENCHMARK_LOGFILE="${PWD}/benchmark.log"
@@ -43,10 +42,6 @@ cpu_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tuna
 memory_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"memoryRequest\")")
 jdkoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_jdkoptions(\"hpo_config.json\")")
 envoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_envoptions(\"hpo_config.json\")")
-
-STARTUP_TIMEOUT=$(BENCHMARK_TIMEOUT * 60 / 5)
-echo "STARTUP_TIMEOUT= ${STARTUP_TIMEOUT}"
-
 
 if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	if [[ ${BENCHMARK_NAME} == "techempower" ]]; then
@@ -187,7 +182,12 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			## Calculate objective function result value
 			objfunc_result=`${PY_CMD} -c "import hpo_helpers.getobjfuncresult; hpo_helpers.getobjfuncresult.calcobj(\"${SEARCHSPACE_JSON}\", \"output.csv\", \"${OBJFUNC_VARIABLES}\")"`
 		else
-			## TODO: Check on how to get horreum run id details
+			# Get jenkins job-id
+			JOB_STATUS=$(curl -sk "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/lastBuild/api/json")
+			JENKINS_RUN_ID=$(echo "$JOB_STATUS" | jq -r '.id')
+			# Get horreum id
+			horreumID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${JENKINS_RUN_ID}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
+
 			curl -s 'https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues' | jq -r . > output.json
 			## Calculate objective function result value
 			objfunc_result=`${PY_CMD} -c "import hpo_helpers.getobjfuncresult; hpo_helpers.getobjfuncresult.calcobj(\"${SEARCHSPACE_JSON}\", \"output.json\", \"${OBJFUNC_VARIABLES}\")"`

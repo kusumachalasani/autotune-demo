@@ -32,7 +32,7 @@ function usage() {
 	echo "e = disable hpo experiments"
 	echo "benchmark = benchmark to run. Default techempower"
 	echo "searchspace = searchspace json"
-	echo "jenkinsmachine jenkinsport jenkinsjob jenkinstoken jenkinsrepo jenkinsbenchmarktimeout  :JENKINS CONFIGURATION"
+	echo "jenkinsmachine jenkinsport jenkinsjob jenkinstoken jenkinsrepo jenkinshorreum  :JENKINS CONFIGURATION"
 	echo "p = expose prometheus port"
 	exit 1
 }
@@ -229,7 +229,7 @@ function hpo_experiments() {
 		echo
 		echo "Run the benchmark for trial ${i}"
 		echo
-		BENCHMARK_OUTPUT=$(./hpo_helpers/runbenchmark.sh "hpo_config.json" "${SEARCHSPACE_JSON}" "$i" "${BENCHMARK_CLUSTER}" "${BENCHMARK_SERVER}" "${BENCHMARK_NAME}" "${BENCHMARK_RUN_THRU}" "${JENKINS_BENCHMARK_TIMEOUT}" "${JENKINS_MACHINE_NAME}" "${JENKINS_EXPOSED_PORT}" "${JENKINS_SETUP_JOB}" "${JENKINS_SETUP_TOKEN}" "${JENKINS_GIT_REPO_COMMIT}" | tee /dev/tty)
+		BENCHMARK_OUTPUT=$(./hpo_helpers/runbenchmark.sh "hpo_config.json" "${SEARCHSPACE_JSON}" "$i" "${BENCHMARK_CLUSTER}" "${BENCHMARK_SERVER}" "${BENCHMARK_NAME}" "${BENCHMARK_RUN_THRU}" "${JENKINS_MACHINE_NAME}" "${JENKINS_EXPOSED_PORT}" "${JENKINS_SETUP_JOB}" "${JENKINS_SETUP_TOKEN}" "${JENKINS_GIT_REPO_COMMIT}" "${HORREUM}" | tee /dev/tty)
 		echo ${BENCHMARK_OUTPUT}
 		obj_result=$(echo ${BENCHMARK_OUTPUT} | cut -d "=" -f2 | cut -d " " -f1)
 		trial_state=$(echo ${BENCHMARK_OUTPUT} | cut -d "=" -f3 | cut -d " " -f1)
@@ -385,7 +385,6 @@ BENCHMARK_SERVER="localhost"
 BENCHMARK_RUN_THRU="standalone"
 BENCHMARK_NAME="techempower"
 SEARCHSPACE_JSON="hpo_helpers/tfb_qrh_search_space.json"
-JENKINS_BENCHMARK_TIMEOUT="15" #Timeout after 15mins
 
 # By default we start the demo & experiment and we dont expose prometheus port
 prometheus=0
@@ -420,8 +419,8 @@ do
 			searchspace=*)
 				SEARCHSPACE_JSON=${OPTARG#*=}
 				;;
-			jenkinsbenchmarktimeout=*)
-				JENKINS_BENCHMARK_TIMEOUT=${OPTARG#*=}
+			jenkinshorreum=*)
+				HORREUM=${OPTARG#*=}
 				;;
                         *)
                                 ;;
