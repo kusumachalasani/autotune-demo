@@ -140,11 +140,12 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	location=$(echo "$response" | grep -i "Location:" | awk '{print $2}' | tr -d '\r')
 	queueId=$(basename "$location")
 	echo "queueId= ${queueId}"
-	TIMEOUT=60
+	TIMEOUT=6i0
+	run_id=""
 	START_TIME=$(date +%s) 
 	if [ -z "${queueId}" ]; then
 		echo "Failed to retrieve queueId. Check if the job was triggered successfully."
-  		#JOB_COMPLETE = "invalid"
+		JOB_COMPLETE = "invalid"
 	else
 		while true; do
 			#current_time=$(date +%s)
@@ -172,7 +173,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 					echo "run_id is ${JENKINS_RUN_ID}"
 				else
 					echo "Couldn't find the run_id for queue_id=${queueId}"
-					#JOB_COMPLETE = "invalid"
+					JOB_COMPLETE = "invalid"
 				fi
 				break
 			fi
@@ -181,7 +182,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 
 	while [[ "${JOB_COMPLETE}" == false ]]; do
 		##TODO Confirm if this the latest job triggered or using the previous one.
-		JOB_STATUS=$(curl -sk "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/lastBuild/api/json")
+		JOB_STATUS=$(curl -sk "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/api/json")
 		# Validate JSON response
 		if ! echo "$JOB_STATUS" | jq empty; then
 		    echo "Error: Invalid JSON received"
@@ -212,19 +213,20 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 
 	if [[ ${JOB_COMPLETE} == true ]]; then
 		if [[ ${BENCHMARK_NAME} == "techempower" ]]; then
-			curl -ks https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/lastSuccessfulBuild/artifact/run/${PROV_HOST}/output.csv > output.csv	
+			curl -ks https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/artifact/run/${PROV_HOST}/output.csv > output.csv
 			## Format csv file
 			sed -i 's/[[:blank:]]//g' output.csv
 			## Calculate objective function result value
 			objfunc_result=`${PY_CMD} -c "import hpo_helpers.getobjfuncresult; hpo_helpers.getobjfuncresult.calcobj(\"${SEARCHSPACE_JSON}\", \"output.csv\", \"${OBJFUNC_VARIABLES}\")"`
 		else
 			# Get jenkins job-id
-			JOB_STATUS=$(curl -sk "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/lastBuild/api/json")
-			JENKINS_RUN_ID=$(echo "$JOB_STATUS" | jq -r '.id')
+			#JOB_STATUS=$(curl -sk "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/api/json")
+			#JENKINS_RUN_ID=$(echo "$JOB_STATUS" | jq -r '.id')
 			# Get horreum id
-			HORREUM_RUNID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${JENKINS_RUN_ID}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
+			echo "curl -s https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/consoleFull"
+			HORREUM_RUNID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
 
-			echo "JENKINS_RUN_ID= ${JENKINS_RUN_ID} ; horreumID= ${HORREUM_RUNID}"
+			echo "JENKINS_RUN_ID= ${run_id} ; horreumID= ${HORREUM_RUNID}"
 
 			curl -s 'https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues' | jq -r . > output.json
 			echo "outputting horreum json"
