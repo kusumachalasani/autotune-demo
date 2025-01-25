@@ -3,7 +3,7 @@
     "experiment_id": "fr_eap_1",
     "total_trials": 2,
     "parallel_trials":1,
-    "objective_function": "1000*(125*Throughput)/(25*av_watts)",
+    "objective_function": "1000*(Throughput ** 1)/(Avg_Watts ** 2)",
     "value_type": "double",
     "hpo_algo_impl": "optuna_tpe",
     "direction": "maximize",
@@ -13,7 +13,7 @@
             "value_type": "double"
         },
         {
-            "name": "av_watts",
+            "name": "Avg_Watts",
             "value_type": "double"
         }
     ],
