@@ -206,7 +206,7 @@ function hpo_experiments() {
 
 	## Looping through trials of an experiment
 	echo
-	echo "Starting an experiment with ${ttrials} trials to optimize techempower"
+	echo "Starting an experiment with ${ttrials} trials to optimize ${BENCHMARK_NAME}"
 	echo
 	for (( i=0 ; i<${ttrials} ; i++ ))
 	do
@@ -241,6 +241,9 @@ function hpo_experiments() {
 		elif [[ ${trial_state} == "" ]]; then
 			trial_state="failure"
 		fi
+
+		## Only for now: To avoid mising results incase the HPO is aborted
+		cat experiment-output.csv
 
 		## Step 4: Send the results of benchmark to HPOaaS
 		echo "#######################################"
@@ -286,8 +289,8 @@ function hpo_start() {
 	echo "#######################################"
 	echo
 	echo "--> Starts HPOaaS"
-	echo "--> Runs techEmpower benchmark on minikube"
-	echo "--> Optimizes TechEmpower benchmark based on the provided search_space(tfb_qrh_search_space.json) using HPOaaS"
+	echo "--> Runs ${BENCHMARK_NAME} benchmark on ${BENCHMARK_CLUSTER}"
+	echo "--> Optimizes ${BENCHMARK_NAME} benchmark based on the provided search_space(${SEARCHSPACE_JSON}) using HPOaaS"
 	echo "--> search_space provides a performance objective and tunables along with ranges"
 	echo
 
