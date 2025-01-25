@@ -234,6 +234,9 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			cat output.json
 			## Calculate objective function result value
 			objfunc_result=`${PY_CMD} -c "import hpo_helpers.getobjfuncresult; hpo_helpers.getobjfuncresult.calcobj(\"${SEARCHSPACE_JSON}\", \"output.json\", \"${OBJFUNC_VARIABLES}\")"`
+			#Create a csv with benchmark data to append
+			python3 -c "import hpo_helpers.json2csv; hpo_helpers.json2csv.horreumjson2csv(\"output.json\", \"output.csv\",\"objfn_result\", \"${objfunc_result}\")"
+
 		fi
 		echo "$objfunc_result"
 		if [[ ${objfunc_result} != "-1" ]]; then
