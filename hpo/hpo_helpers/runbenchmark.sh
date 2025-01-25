@@ -227,8 +227,9 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			HORREUM_RUNID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
 
 			echo "JENKINS_RUN_ID= ${run_id} ; horreumID= ${HORREUM_RUNID}"
+			echo "curl -s https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues | jq -r ."
 
-			curl -s 'https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues' | jq -r . > output.json
+			curl -s "https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues" | jq -r . > output.json
 			echo "outputting horreum json"
 			cat output.json
 			## Calculate objective function result value
