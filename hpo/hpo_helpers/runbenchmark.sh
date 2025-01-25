@@ -225,13 +225,17 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			# Get horreum id
 			#echo "curl -s https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/consoleFull"
 			HORREUM_RUNID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
-
+			if [ -z "${HORREUM_RUNID}" ]; then
+				# Try out one more time as the job is success
+				echo "Trying out one more time to get the horreum_runid as it was empty even after job is successful"
+				sleep 5
+				HORREUM_RUNID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
+			fi
+			if [ -n "${HORREUM_RUNID}" ]; then
+				curl -s "https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues" | jq -r . > output.json
+			fi
 			echo "JENKINS_RUN_ID= ${run_id} ; horreumID= ${HORREUM_RUNID}"
-			#echo "curl -s https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues | jq -r ."
 
-			curl -s "https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues" | jq -r . > output.json
-			echo "outputting horreum json"
-			#cat output.json
 			## Calculate objective function result value
 			objfunc_result=`${PY_CMD} -c "import hpo_helpers.getobjfuncresult; hpo_helpers.getobjfuncresult.calcobj(\"${SEARCHSPACE_JSON}\", \"output.json\", \"${OBJFUNC_VARIABLES}\")"`
 			#Create a csv with benchmark data to append
