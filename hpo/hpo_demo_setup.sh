@@ -32,7 +32,7 @@ function usage() {
 	echo "e = disable hpo experiments"
 	echo "benchmark = benchmark to run. Default techempower"
 	echo "searchspace = searchspace json"
-	echo "jenkinsmachine jenkinsport jenkinsjob jenkinstoken jenkinsrepo = jenkins configuration"
+	echo "jenkinsmachine jenkinsport jenkinsjob jenkinstoken jenkinsrepo jenkinshorreum  :JENKINS CONFIGURATION"
 	echo "p = expose prometheus port"
 	exit 1
 }
@@ -138,6 +138,7 @@ function hpo_install() {
 	popd >/dev/null
 	echo "#######################################"
 	echo
+
 }
 
 # Function to get the URL to access HPO
@@ -152,7 +153,7 @@ function getURL() {
 		fi
 		url=`awk '/'"${service_msg}"'/{print $NF}' "${LOGFILE}" | tail -1`
 	fi
-	echo ${url}
+	echo "${url}"
 }
 
 ###########################################
@@ -165,7 +166,6 @@ function getURL() {
 ## Currently, it uses TechEmpower benchmark running in minikube for the demo.
 function hpo_experiments() {
 
-	#SEARCHSPACE_JSON="hpo_helpers/tfb_qrh_search_space.json"
 	URL=$(getURL)
 	exp_json=$(cat ${SEARCHSPACE_JSON})
 	if [[ ${exp_json} == "" ]]; then
@@ -190,7 +190,7 @@ function hpo_experiments() {
 
 	## Looping through trials of an experiment
 	echo
-	echo "Starting an experiment with ${ttrials} trials to optimize techempower"
+	echo "Starting an experiment with ${ttrials} trials to optimize ${BENCHMARK_NAME}"
 	echo
 	for (( i=0 ; i<${ttrials} ; i++ ))
 	do
@@ -199,11 +199,10 @@ function hpo_experiments() {
 		echo
 		echo "Generate the config for trial ${i}"
 		echo
-		sleep 10
+		sleep 5
 		HPO_CONFIG=$(curl -LfSs -H 'Accept: application/json' "${URL}"'/experiment_trials?experiment_name='"${ename}"'&trial_number='"${i}")
 		check_err "Error: Issue generating the configuration from HPO."
-		echo ${HPO_CONFIG}
-		echo "${HPO_CONFIG}" > hpo_config.json
+		echo "${HPO_CONFIG}" | tee hpo_config.json
 
 		## Step 3: Run the benchmark with HPO config.
 		## Output of the benchmark should contain objective function result value and status of the benchmark.
@@ -214,7 +213,7 @@ function hpo_experiments() {
 		echo
 		echo "Run the benchmark for trial ${i}"
 		echo
-		BENCHMARK_OUTPUT=$(./hpo_helpers/runbenchmark.sh "hpo_config.json" "${SEARCHSPACE_JSON}" "$i" "${BENCHMARK_CLUSTER}" "${BENCHMARK_SERVER}" "${BENCHMARK_NAME}" "${BENCHMARK_RUN_THRU}" "${JENKINS_MACHINE_NAME}" "${JENKINS_EXPOSED_PORT}" "${JENKINS_SETUP_JOB}" "${JENKINS_SETUP_TOKEN}" "${JENKINS_GIT_REPO_COMMIT}" | tee /dev/tty)
+		BENCHMARK_OUTPUT=$(./hpo_helpers/runbenchmark.sh "hpo_config.json" "${SEARCHSPACE_JSON}" "$i" "${BENCHMARK_CLUSTER}" "${BENCHMARK_SERVER}" "${BENCHMARK_NAME}" "${BENCHMARK_RUN_THRU}" "${JENKINS_MACHINE_NAME}" "${JENKINS_EXPOSED_PORT}" "${JENKINS_SETUP_JOB}" "${JENKINS_SETUP_TOKEN}" "${JENKINS_GIT_REPO_COMMIT}" "${HORREUM}" | tee /dev/tty)
 		echo ${BENCHMARK_OUTPUT}
 		obj_result=$(echo ${BENCHMARK_OUTPUT} | cut -d "=" -f2 | cut -d " " -f1)
 		trial_state=$(echo ${BENCHMARK_OUTPUT} | cut -d "=" -f3 | cut -d " " -f1)
@@ -226,6 +225,9 @@ function hpo_experiments() {
 		elif [[ ${trial_state} == "" ]]; then
 			trial_state="failure"
 		fi
+
+		## Only for now: To avoid mising results incase the HPO is aborted
+		cat experiment-output.csv
 
 		## Step 4: Send the results of benchmark to HPOaaS
 		echo "#######################################"
@@ -271,8 +273,8 @@ function hpo_start() {
 	echo "#######################################"
 	echo
 	echo "--> Starts HPOaaS"
-	echo "--> Runs techEmpower benchmark on minikube"
-	echo "--> Optimizes TechEmpower benchmark based on the provided search_space(tfb_qrh_search_space.json) using HPOaaS"
+	echo "--> Runs ${BENCHMARK_NAME} benchmark on ${BENCHMARK_CLUSTER}"
+	echo "--> Optimizes ${BENCHMARK_NAME} benchmark based on the provided search_space(${SEARCHSPACE_JSON}) using HPOaaS"
 	echo "--> search_space provides a performance objective and tunables along with ranges"
 	echo
 
@@ -294,7 +296,6 @@ function hpo_start() {
 #  HPO is already running on operate-first. So, no need to install again.
 	if [[ ${CLUSTER_TYPE} != "operate-first" ]]; then
 		 # Installing jsonschema explicitly to debug errors
-		#python3 -m pip install --user --no-cache-dir --force-reinstall -r ./hpo/rest_requirements.txt
 		python3 -m pip install --user --no-cache-dir --force-reinstall optuna
 		python3 -m pip install --user --no-cache-dir --force-reinstall requests
 		python3 -m pip install --user --no-cache-dir --force-reinstall scikit-optimize
@@ -334,7 +335,7 @@ function hpo_terminate() {
 	echo
 	pushd hpo >/dev/null
 		./deploy_hpo.sh -t -c ${CLUSTER_TYPE}
-		echo "ERROR: Failed to terminate hpo"
+		#check_err "ERROR: Failed to terminate hpo"
 		echo
 	popd >/dev/null
 }
@@ -367,6 +368,7 @@ BENCHMARK_SERVER="localhost"
 BENCHMARK_RUN_THRU="standalone"
 BENCHMARK_NAME="techempower"
 SEARCHSPACE_JSON="hpo_helpers/tfb_qrh_search_space.json"
+
 # By default we start the demo & experiment and we dont expose prometheus port
 prometheus=0
 hpo_restart=0
@@ -399,6 +401,9 @@ do
                                 ;;
 			searchspace=*)
 				SEARCHSPACE_JSON=${OPTARG#*=}
+				;;
+			jenkinshorreum=*)
+				HORREUM=${OPTARG#*=}
 				;;
                         *)
                                 ;;
