@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2021, 2022 Red Hat, IBM Corporation and others.
+# Copyright (c) 2024, 2025 Red Hat, IBM Corporation and others.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -197,6 +197,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 		elif [[ "$JOB_RESULT" == "FAILURE" ]]; then
 			break
 		fi
+		#Commenting out timeout for the benchmark job
 		#if [[ $((JOB_TIMESTAMP + JOB_DURATION)) -gt "${JOBSTART_TIME}" ]] && [[ "$JOB_RESULT" == "SUCCESS" ]]; then
 		#	JOB_COMPLETE=true
 		#	break
@@ -219,11 +220,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			## Calculate objective function result value
 			objfunc_result=`${PY_CMD} -c "import hpo_helpers.getobjfuncresult; hpo_helpers.getobjfuncresult.calcobj(\"${SEARCHSPACE_JSON}\", \"output.csv\", \"${OBJFUNC_VARIABLES}\")"`
 		else
-			# Get jenkins job-id
-			#JOB_STATUS=$(curl -sk "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/api/json")
-			#JENKINS_RUN_ID=$(echo "$JOB_STATUS" | jq -r '.id')
 			# Get horreum id
-			#echo "curl -s https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/consoleFull"
 			HORREUM_RUNID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
 			if [ -z "${HORREUM_RUNID}" ]; then
 				# Try out one more time as the job is success
@@ -234,7 +231,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			if [ -n "${HORREUM_RUNID}" ]; then
 				curl -s "https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues" | jq -r . > output.json
 			fi
-			echo "JENKINS_RUN_ID= ${run_id} ; horreumID= ${HORREUM_RUNID}"
+			echo "horreumID= ${HORREUM_RUNID}"
 
 			## Calculate objective function result value
 			objfunc_result=`${PY_CMD} -c "import hpo_helpers.getobjfuncresult; hpo_helpers.getobjfuncresult.calcobj(\"${SEARCHSPACE_JSON}\", \"output.json\", \"${OBJFUNC_VARIABLES}\")"`
@@ -242,7 +239,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			python3 -c "import hpo_helpers.json2csv; hpo_helpers.json2csv.horreumjson2csv(\"output.json\", \"output.csv\",\"objfn_result\", \"${objfunc_result}\")"
 
 		fi
-		echo "$objfunc_result"
+		#echo "$objfunc_result"
 		if [[ ${objfunc_result} != "-1" ]]; then
 			benchmark_status="success"
 		else
