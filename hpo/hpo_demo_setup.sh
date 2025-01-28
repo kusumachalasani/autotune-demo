@@ -123,6 +123,11 @@ function hpo_install() {
 		fi
 		if [[ ${CLUSTER_TYPE} == "native" ]]; then
 			echo
+			echo "Terminating before starting"
+                        SERVICE_STATUS_NATIVE=$(ps -ef | grep service.py | grep -v grep | awk '{print $2}')
+                        echo "Before SERVICE_STATUS_NATIVE= ${SERVICE_STATUS_NATIVE}"
+                        ps -ef | grep src/service.py | grep -v grep | awk '{print $2}' | xargs kill -9 >/dev/null 2>&1
+
 			echo "Starting hpo with  ./deploy_hpo.sh -c ${CLUSTER_TYPE} --rest"
 			echo
 			./deploy_hpo.sh -c ${CLUSTER_TYPE} --rest >> ${LOGFILE} 2>&1 &
