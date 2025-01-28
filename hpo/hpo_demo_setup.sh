@@ -252,6 +252,10 @@ function hpo_experiments() {
 		fi
 	done
 
+	## Gather the plots for importance and optimization history
+	curl -so tunable_importance.html "${URL}/plot?experiment_name=${ename}&type=tunable_importance"
+	curl -so optimization_history.html "${URL}/plot?experiment_name=${ename}&type=optimization_history"
+
 	echo "#######################################"
 	echo
 	echo "Experiment complete"
