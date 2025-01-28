@@ -252,8 +252,9 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 		objfunc_result=0
 	fi
 	### Add the HPO config and output data from benchmark of all trials into single csv
-	${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.hpoconfig2csv(\"hpo_config.json\",\"output.csv\",\"experiment-output.csv\",\"${TRIAL}\")"
-	rm -rf output.csv output.json
+	${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.merge_hpoconfig_benchoutput(\"hpo_config.json\",\"output.csv\",\"jenkins-trial-output.csv\",\"${TRIAL}\")"
+	${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.combine_csvs(\"jenkins-trial-output.csv\", \"experiment-output.csv\")"
+	rm -rf output.csv output.json jenkins-trial-output.csv
 elif [[ ${BENCHMARK_RUN_THRU} == "standalone" ]]; then
 	if [[ ${BENCHMARK_NAME} == "techempower" ]]; then
 
@@ -300,7 +301,7 @@ elif [[ ${BENCHMARK_RUN_THRU} == "standalone" ]]; then
 			objfunc_result=0
 		fi
 		### Add the HPO config and output data from benchmark of all trials into single csv
-	        ${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.hpoconfig2csv(\"hpo_config.json\",\"output.csv\",\"experiment-output.csv\",\"${TRIAL}\")"
+	        ${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.merge_hpoconfig_benchoutput(\"hpo_config.json\",\"output.csv\",\"experiment-output.csv\",\"${TRIAL}\")"
 
 		## Remove the benchmark output file which is copied.
 		rm -rf output.csv

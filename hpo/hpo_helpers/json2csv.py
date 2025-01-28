@@ -1,5 +1,7 @@
 import json
 import csv
+import os
+import pandas as pd
 
 def flatten_json(nested_json, parent_key='', sep='_'):
     items = []
@@ -11,8 +13,8 @@ def flatten_json(nested_json, parent_key='', sep='_'):
             items.append((new_key, v))
     return dict(items)
 
-def horreumjson2csv(input_file, output_file, field_name, field_value):
-    with open(input_file, 'r') as f:
+def horreumjson2csv(input_json, output_csv, field_name, field_value):
+    with open(input_json, 'r') as f:
         data = json.load(f)
 
     flat_data = [flatten_json(item) for item in data]
@@ -27,11 +29,9 @@ def horreumjson2csv(input_file, output_file, field_name, field_value):
     if field_name not in fieldnames:
         fieldnames.append(field_name)
 
-    with open(output_file, 'w', newline='') as f:
+    with open(output_csv, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for item in flat_data:
             row = {field: item.get(field, '') for field in fieldnames}
             writer.writerow(row)
-
-
