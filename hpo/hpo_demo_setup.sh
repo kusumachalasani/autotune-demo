@@ -253,8 +253,8 @@ function hpo_experiments() {
 	done
 
 	## Gather the plots for importance and optimization history
-	curl -so tunable_importance.html "${URL}/plot?experiment_name=${ename}&type=tunable_importance"
-	curl -so optimization_history.html "${URL}/plot?experiment_name=${ename}&type=optimization_history"
+	curl -so ${HPO_RESULTS_DIR}/tunable_importance.html "${URL}/plot?experiment_name=${ename}&type=tunable_importance"
+	curl -so ${HPO_RESULTS_DIR}/optimization_history.html "${URL}/plot?experiment_name=${ename}&type=optimization_history"
 
 	echo "#######################################"
 	echo
@@ -359,6 +359,12 @@ function hpo_cleanup() {
 HPO_DOCKER_REPO="quay.io/kruize/hpo"
 PY_CMD="python3"
 LOGFILE="${PWD}/hpo.log"
+HPO_RESULTS_DIR="${PWD}/results"
+
+if [ ! -d "${HPO_RESULTS_DIR}" ]; then
+  mkdir -p ${HPO_RESULTS_DIR}
+fi
+
 export N_TRIALS=3
 export N_JOBS=1
 export APP_NAMESPACE="default"

@@ -39,10 +39,6 @@ LOGFILE="${PWD}/hpo.log"
 BENCHMARK_LOGFILE="${PWD}/benchmark.log"
 HPO_RESULTS_DIR="${PWD}/results"
 
-if [ ! -d "${HPO_RESULTS_DIR}" ]; then
-  mkdir -p ${HPO_RESULTS_DIR}
-fi
-
 cpu_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"cpuRequest\")")
 memory_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"memoryRequest\")")
 jdkoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_jdkoptions(\"hpo_config.json\")")
