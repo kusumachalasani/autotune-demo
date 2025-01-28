@@ -11,7 +11,8 @@ def get_tunablevalue(hpoconfigjson, tunable_name):
         for st in sstunables:
             if st["tunable_name"] == tunable_name:
                 tunable_value = str(st["tunable_value"])
-    print(tunable_value)
+                return tunable_value
+    return None
 
 ## Get experiment_id from the searchspace
 ## Input: searchspacejson
