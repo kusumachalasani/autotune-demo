@@ -37,6 +37,11 @@ HORREUM=${13}
 PY_CMD="python3"
 LOGFILE="${PWD}/hpo.log"
 BENCHMARK_LOGFILE="${PWD}/benchmark.log"
+HPO_RESULTS_DIR="${PWD}/results"
+
+if [ ! -d "${HPO_RESULTS_DIR}" ]; then
+  mkdir -p ${HPO_RESULTS_DIR}
+fi
 
 cpu_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"cpuRequest\")")
 memory_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"memoryRequest\")")
@@ -221,7 +226,8 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			objfunc_result=`${PY_CMD} -c "import hpo_helpers.getobjfuncresult; hpo_helpers.getobjfuncresult.calcobj(\"${SEARCHSPACE_JSON}\", \"output.csv\", \"${OBJFUNC_VARIABLES}\")"`
 		else
 			# Get horreum id
-			HORREUM_RUNID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
+			HORREUM_RUNID=$(curl -s "https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/${run_id}/consoleText" | grep "Uploaded run ID" | awk -F ': ' '{print $2}')
+			#consoleFull" | grep "Uploaded run ID" | awk '{print $5}')
 			if [ -z "${HORREUM_RUNID}" ]; then
 				# Try out one more time as the job is success
 				echo "Trying out one more time to get the horreum_runid as it was empty even after job is successful"
@@ -230,6 +236,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			fi
 			if [ -n "${HORREUM_RUNID}" ]; then
 				curl -s "https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues" | jq -r . > output.json
+				cp output.json ${HPO_RESULTS_DIR}/trial-${TRIAL}_run-${run_id}_horreum-${HORREUM_RUNID}.json
 			fi
 			echo "horreumID= ${HORREUM_RUNID}"
 
@@ -255,6 +262,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.merge_hpoconfig_benchoutput(\"hpo_config.json\",\"output.csv\",\"jenkins-trial-output.csv\",\"${TRIAL}\")"
 	${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.combine_csvs(\"jenkins-trial-output.csv\", \"experiment-output.csv\")"
 	rm -rf output.csv output.json jenkins-trial-output.csv
+	cp experiment-output.csv ${HPO_RESULTS_DIR}/experiment-output.csv
 elif [[ ${BENCHMARK_RUN_THRU} == "standalone" ]]; then
 	if [[ ${BENCHMARK_NAME} == "techempower" ]]; then
 
