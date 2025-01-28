@@ -258,8 +258,9 @@ function hpo_experiments() {
 	done
 
 	## Gather the plots for importance and optimization history
-	curl -so ${HPO_RESULTS_DIR}/tunable_importance.html "${URL}/plot?experiment_name=${ename}&type=tunable_importance"
-	curl -so ${HPO_RESULTS_DIR}/optimization_history.html "${URL}/plot?experiment_name=${ename}&type=optimization_history"
+	echo "curl -o ${HPO_RESULTS_DIR}/tunable_importance.html ${URL}/plot?experiment_name=${ename}&type=tunable_importance"
+	curl -o ${HPO_RESULTS_DIR}/tunable_importance.html "${URL}/plot?experiment_name=${ename}&type=tunable_importance"
+	curl -o ${HPO_RESULTS_DIR}/optimization_history.html "${URL}/plot?experiment_name=${ename}&type=optimization_history"
 
 	echo "#######################################"
 	echo
@@ -313,6 +314,7 @@ function hpo_start() {
 		python3 -m pip install --user --no-cache-dir --force-reinstall click
 		python3 -m pip install --user --no-cache-dir --force-reinstall protobuf
 		python3 -m pip install --user --no-cache-dir --force-reinstall plotly
+		python3 -m pip install --user --no-cache-dir --force-reinstall pandas
 		hpo_install
 		sleep 10
 		cat ${LOGFILE}
@@ -364,7 +366,7 @@ function hpo_cleanup() {
 HPO_DOCKER_REPO="quay.io/kruize/hpo"
 PY_CMD="python3"
 LOGFILE="${PWD}/hpo.log"
-HPO_RESULTS_DIR="${PWD}/results/results"
+HPO_RESULTS_DIR="${PWD}/results"
 
 if [ ! -d "${HPO_RESULTS_DIR}" ]; then
   mkdir -p ${HPO_RESULTS_DIR}
