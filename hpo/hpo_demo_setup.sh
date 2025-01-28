@@ -359,7 +359,7 @@ function hpo_cleanup() {
 HPO_DOCKER_REPO="quay.io/kruize/hpo"
 PY_CMD="python3"
 LOGFILE="${PWD}/hpo.log"
-HPO_RESULTS_DIR="${PWD}/results"
+HPO_RESULTS_DIR="${PWD}/results/results"
 
 if [ ! -d "${HPO_RESULTS_DIR}" ]; then
   mkdir -p ${HPO_RESULTS_DIR}

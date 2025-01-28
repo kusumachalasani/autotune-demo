@@ -37,7 +37,7 @@ HORREUM=${13}
 PY_CMD="python3"
 LOGFILE="${PWD}/hpo.log"
 BENCHMARK_LOGFILE="${PWD}/benchmark.log"
-HPO_RESULTS_DIR="${PWD}/results"
+HPO_RESULTS_DIR="${PWD}/results/results"
 
 cpu_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"cpuRequest\")")
 memory_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"memoryRequest\")")
