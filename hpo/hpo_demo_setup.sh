@@ -131,7 +131,7 @@ function hpo_install() {
 
 			echo "Starting hpo with  ./deploy_hpo.sh -c ${CLUSTER_TYPE} "
 			echo
-			./deploy_hpo.sh -c ${CLUSTER_TYPE} --rest >> ${LOGFILE} 2>&1 &
+			./deploy_hpo.sh -c ${CLUSTER_TYPE} -p 8092 --rest >> ${LOGFILE} 2>&1 &
 			check_err "ERROR: HPO failed to start, exiting"
 		else
 			echo
