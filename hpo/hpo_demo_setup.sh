@@ -128,9 +128,9 @@ function hpo_install() {
                         echo "Before SERVICE_STATUS_NATIVE= ${SERVICE_STATUS_NATIVE}"
                         ps -ef | grep src/service.py | grep -v grep | awk '{print $2}' | xargs kill -9 >/dev/null 2>&1
 
-			echo "Starting hpo with  ./deploy_hpo.sh -c ${CLUSTER_TYPE} --rest"
+			echo "Starting hpo with  ./deploy_hpo.sh -c ${CLUSTER_TYPE} -p 8092 --rest"
 			echo
-			./deploy_hpo.sh -c ${CLUSTER_TYPE} --rest >> ${LOGFILE} 2>&1 &
+			./deploy_hpo.sh -c ${CLUSTER_TYPE} -p 8092 --rest >> ${LOGFILE} 2>&1 &
 			check_err "ERROR: HPO failed to start, exiting"
 		else
 			echo
