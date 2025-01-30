@@ -107,14 +107,14 @@ function clone_repos() {
 	echo "1. Cloning ${repo_name} git repos"
 	if [ ! -d ${repo_name} ]; then
 		if [[ ${repo_name} == "hpo" ]]; then
-			git clone git@github.com:kusumachalasani/${repo_name}.git -b getservice >/dev/null 2>/dev/null
+			git clone git@github.com:kusumachalasani/${repo_name}.git -b plotsdebug >/dev/null 2>/dev/null
 			sed -i 's/8092/8095/g' hpo/src/utils.py
 		else
 			git clone git@github.com:kruize/${repo_name}.git >/dev/null 2>/dev/null
 		fi
 		if [ $? -ne 0 ]; then
 			if [[ ${repo_name} == "hpo" ]]; then
-	                        git clone https://github.com/kusumachalasani/${repo_name}.git -b getservice >/dev/null 2>/dev/null
+	                        git clone https://github.com/kusumachalasani/${repo_name}.git -b plotsdebug >/dev/null 2>/dev/null
 				sed -i 's/8092/8095/g' hpo/src/utils.py
 			else
 				git clone https://github.com/kruize/${repo_name}.git 2>/dev/null
