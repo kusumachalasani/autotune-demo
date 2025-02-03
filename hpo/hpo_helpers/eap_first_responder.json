@@ -3,7 +3,7 @@
     "experiment_id": "fr_eap_1",
     "total_trials": 100,
     "parallel_trials":1,
-    "objective_function": "10000*(Throughput ** 1)/(Avg_Watts ** 2)",
+    "objective_function": "100000*(Throughput ** 1)/(Avg_Watts ** 2)",
     "value_type": "double",
     "hpo_algo_impl": "optuna_tpe",
     "direction": "maximize",
