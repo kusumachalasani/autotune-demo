@@ -232,6 +232,11 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			fi
 			if [ -n "${HORREUM_RUNID}" ]; then
 				curl -s "https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues" | jq -r . > output.json
+				if cat output.json | jq -e '.[0].values == {}' > /dev/null; then
+					# Sleep for 10 seconds and try again as the values are empty
+					sleep 10
+					curl -s "https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues" | jq -r . > output.json
+				fi
 				cp output.json ${HPO_RESULTS_DIR}/trial-${TRIAL}_run-${run_id}_horreum-${HORREUM_RUNID}.json
 			fi
 			echo "horreumID=${HORREUM_RUNID}"
