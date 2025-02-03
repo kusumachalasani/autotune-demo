@@ -140,8 +140,8 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	response=$(curl -s -k -i -w "%{http_code}\n" "${jobUrl}")
 	location=$(echo "$response" | grep -i "Location:" | awk '{print $2}' | tr -d '\r')
 	queueId=$(basename "$location")
-	echo "queueId= ${queueId}"
-	TIMEOUT=6i0
+	echo "queueId=${queueId}"
+	TIMEOUT=60
 	run_id=""
 	START_TIME=$(date +%s)
 	if [ -z "${queueId}" ]; then
@@ -161,7 +161,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			if [ -n "$response" ]; then
 				run_id=$(echo "$response" | jq -r '.executable.number // empty')
 				if [ -n "${run_id}" ]; then
-					echo "run_id is ${run_id}"
+					echo "run_id=${run_id}"
 					break
 				fi
 				#sleep 1
@@ -171,7 +171,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 				JENKINS_RUN_ID=$(echo "$JOB_STATUS" | jq -r '.id')
 				JENKINS_QUEUE_ID=$(echo "$JOB_STATUS" | jq -r '.queueId')
 				if [[ ${JENKINS_QUEUE_ID} == ${queueId} ]]; then
-					echo "run_id is ${JENKINS_RUN_ID}"
+					echo "run_id=${JENKINS_RUN_ID}"
 				else
 					echo "Couldn't find the run_id for queue_id=${queueId}"
 					JOB_COMPLETE = "invalid"
@@ -234,7 +234,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 				curl -s "https://${HORREUM}/api/run/${HORREUM_RUNID}/labelValues" | jq -r . > output.json
 				cp output.json ${HPO_RESULTS_DIR}/trial-${TRIAL}_run-${run_id}_horreum-${HORREUM_RUNID}.json
 			fi
-			echo "horreumID= ${HORREUM_RUNID}"
+			echo "horreumID=${HORREUM_RUNID}"
 
 			## Calculate objective function result value
 			objfunc_result=`${PY_CMD} -c "import hpo_helpers.getobjfuncresult; hpo_helpers.getobjfuncresult.calcobj(\"${SEARCHSPACE_JSON}\", \"output.json\", \"${OBJFUNC_VARIABLES}\")"`
