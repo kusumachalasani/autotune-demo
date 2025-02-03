@@ -230,7 +230,7 @@ function hpo_experiments() {
 		elif [[ ${trial_state} == "" ]]; then
 			trial_state="failure"
 		fi
-
+		echo "obj_result=$obj_result trial_state=$trial_state"
 		## Only for now: To avoid mising results incase the HPO is aborted
 		cat experiment-output.csv
 
