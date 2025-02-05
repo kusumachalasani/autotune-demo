@@ -322,6 +322,8 @@ function hpo_start() {
 		python3 -m pip install --user --no-cache-dir --force-reinstall protobuf
 		python3 -m pip install --user --no-cache-dir --force-reinstall plotly
 		python3 -m pip install --user --no-cache-dir --force-reinstall pandas
+		python3 -m pip install --user --no-cache-dir --force-reinstall sklearn
+
 		hpo_install
 		sleep 10
 		cat ${LOGFILE}
