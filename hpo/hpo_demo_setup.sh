@@ -222,6 +222,8 @@ function hpo_experiments() {
 		#echo ${BENCHMARK_OUTPUT}
 		obj_result=$((i * 1000))
 		trial_state="success"
+		echo "Debug csv" > experiment-output.csv
+		cp experiment-output.csv ${HPO_RESULTS_DIR}/experiment-output.csv
 		#obj_result=$(echo ${BENCHMARK_OUTPUT} | awk '{for(i=1;i<=NF;i++) if($i ~ /^Objfunc_result=/) {split($i,a,"="); print a[2]}}')
 		#trial_state=$(echo ${BENCHMARK_OUTPUT} | awk '{for(i=1;i<=NF;i++) if($i ~ /^Benchmark_status=/) {split($i,a,"="); print a[2]}}')
 		### Setting obj_result=0 and trial_state="failure" to contine the experiment if obj_result is nan or trial_state is empty because of any issue with benchmark output.
@@ -257,6 +259,9 @@ function hpo_experiments() {
 		fi
 			echo
 		fi
+		echo "curl -o ${HPO_RESULTS_DIR}/tunable_importance.html ${URL}/plot?experiment_name=${ename}&type=tunable_importance"
+	        curl -o ${HPO_RESULTS_DIR}/tunable_importance.html "${URL}/plot?experiment_name=${ename}&type=tunable_importance"
+
 	done
 
 	## Gather the plots for importance and optimization history
