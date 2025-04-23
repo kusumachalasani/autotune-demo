@@ -199,7 +199,6 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 			break
 		elif [[ "$JOB_RESULT" == "ABORTED" ]]; then
                         break
-
 		fi
 		#Commenting out timeout for the benchmark job
 		#if [[ $((JOB_TIMESTAMP + JOB_DURATION)) -gt "${JOBSTART_TIME}" ]] && [[ "$JOB_RESULT" == "SUCCESS" ]]; then
@@ -215,6 +214,8 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 		#fi
 		sleep 5
 	done
+
+	echo "JOB_COMPLETE = ${JOB_COMPLETE}"
 
 	if [[ ${JOB_COMPLETE} == true ]]; then
 		if [[ ${BENCHMARK_NAME} == "techempower" ]]; then
