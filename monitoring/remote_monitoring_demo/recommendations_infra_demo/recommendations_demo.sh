@@ -237,7 +237,7 @@ function monitoring_demo_start() {
 		summarize_all_data
 	elif [[ ${validateRecommendations} -eq 1 ]]; then
 		if [[ -z ${daysData} ]]; then
-			daysData=""
+			daysData="None"
 		fi
 		echo "Validating the container Recommendations..."
 		resultsDir="./recommendations_demo/validateResults"
