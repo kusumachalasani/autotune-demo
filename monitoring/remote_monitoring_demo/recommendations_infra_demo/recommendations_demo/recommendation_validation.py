@@ -567,7 +567,57 @@ def create_json_from_csv(csv_file_path, outputjsonfile):
                                 "format": "MiB"
                                 }
                             }
-                        }) 
+                        })
+            if row["accelerator_core_usage_percentage_max"]:
+                container_metrics.append({
+                        "name" : "acceleratorCoreUsage",
+                        "results": {
+                            "metadata": {
+                                "accelerator_model_name": row["accelerator_model_name"],
+                                "node": row["node"]
+                            }
+                            "aggregation_info": {
+                                "min": float(row["accelerator_core_usage_percentage_min"]),
+                                "max": float(row["accelerator_core_usage_percentage_max"]),
+                                "avg": float(row["accelerator_core_usage_percentage_avg"]),
+                                "format": "percentage"
+                                }
+                            }
+                        })
+
+            if row["accelerator_memory_copy_percentage_max"]:
+                container_metrics.append({
+                        "name" : "acceleratorMemoryUsage",
+                        "results": {
+                            "metadata": {
+                                "accelerator_model_name": row["accelerator_model_name"],
+                                "node": row["node"]
+                            }
+                            "aggregation_info": {
+                                "min": float(row["accelerator_memory_copy_percentage_min"]),
+                                "max": float(row["accelerator_memory_copy_percentage_max"]),
+                                "avg": float(row["accelerator_memory_copy_percentage_avg"]),
+                                "format": "percentage"
+                                }
+                            }
+                        })
+            if row["accelerator_frame_buffer_usage_max"]:
+                container_metrics.append({
+                        "name" : "acceleratorFrameBufferUsage",
+                        "results": {
+                            "metadata": {
+                                "accelerator_model_name": row["accelerator_model_name"],
+                                "node": row["node"]
+                            }
+                            "aggregation_info": {
+                                "min": float(row["accelerator_frame_buffer_usage_min"]),
+                                "max": float(row["accelerator_frame_buffer_usage_max"]),
+                                "avg": float(row["accelerator_frame_buffer_usage_avg"]),
+                                "format": "percentage"
+                                }
+                            }
+                        })
+
 
 
             # Create a dictionary to hold the container information
