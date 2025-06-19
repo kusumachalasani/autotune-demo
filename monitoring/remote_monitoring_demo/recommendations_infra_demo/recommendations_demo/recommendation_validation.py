@@ -802,8 +802,7 @@ def getExperimentMetrics(filename):
                             if "results" in container_data:
                                 for timezone, timezone_data in container_data["results"].items():
                                     for metric_name, metric_data in timezone_data["metrics"].items():
-                                        if metric_name in ["acceleratorCoreUsage", "acceleratorMemoryUsage", "accelerator
-FrameBufferUsage"]:
+                                        if metric_name in ["acceleratorCoreUsage", "acceleratorMemoryUsage", "acceleratorFrameBufferUsage"]:
                                             containsGPUdata=True
                                             break
 
