@@ -248,11 +248,6 @@ function monitoring_demo_start() {
 		# Use below resultsDir to validate namespace experiments
 		resultsDir="./recommendations_demo/validateNamespaceResults"
 		monitoring_recommendations_demo_with_data ${resultsDir} "none" true ${bulkResults} ${daysData} "namespace"
-		echo "-----------------------------------------"
-		echo "Validating the container gpu recommendations..."
-		# Use below resultsDir to validate container-gpu experiments
-		resultsDir="./recommendations_demo/validateGPUResults"
-		monitoring_recommendations_demo_with_data ${resultsDir} "none" true ${bulkResults} ${daysData} "container"
 
 		validate_experiment_recommendations true
 		exit_code=$?
