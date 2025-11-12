@@ -117,6 +117,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
                       ["BRANCH"]="${GIT_REPO_COMMIT}"
                       ["JVM_TUNABLES"]="${jdkoptions}"
                       ["ENV_OPTIONS"]="${envoptions}"
+		      ["HYPERFOIL_PARAMS_CONFIG"]='{"warmup1":{"duration":"60s","max_sessions":30,"users_per_sec":25},"warmup2":{"duration":"120s","max_sessions":75,"users_per_sec":70},"steady1":{"duration":"120s","max_sessions":800,"users_per_sec":1000},"steady2":{"duration":"180s","max_sessions":1000,"users_per_sec":1200}}'
               )
               # Initialize an empty string for the encoded query
               query=""
