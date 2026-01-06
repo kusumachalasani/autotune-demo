@@ -22,6 +22,29 @@ import os
 import time
 import shutil
 
+def get_pod_name(label_selector, namespace):
+    cmd = (
+        f"kubectl -n {namespace} get pods "
+        f"-l {label_selector} "
+        "-o jsonpath='{.items[0].metadata.name}'"
+    )
+    result = subprocess.run(
+        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True,
+    )
+    return result.stdout.decode().strip().strip("'")
+
+def kill_existing_port_forward(namespace):
+    result = subprocess.run(
+        [
+            "pgrep", "-f", f"kubectl.*{namespace}.*port-forward.*(pod|svc)/.*kruize",
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        text=True,
+    )
+
+    for pid in result.stdout.split():
+        os.kill(int(pid), signal.SIGTERM)
 
 def form_kruize_url(cluster_type):
     global URL
@@ -47,6 +70,20 @@ def form_kruize_url(cluster_type):
         port = subprocess.run(['oc expose svc/kruize -n openshift-tuning'], shell=True, stdout=subprocess.PIPE)
         kruize_URL = subprocess.run(['oc status -n openshift-tuning | grep "svc/kruize[^-]" | cut -d " " -f1'], shell=True, stdout=subprocess.PIPE)
         URL = kruize_URL.stdout.decode('utf-8').strip('\n')
+
+    elif (cluster_type == "kind"):
+        SERVER_IP="127.0.0.1"
+        AUTOTUNE_PORT=8080
+        KRUIZE_POD = get_pod_name("app=kruize", "monitoring")
+
+        DEVNULL = open(os.devnull, "wb")
+        kill_existing_port_forward("monitoring")
+        time.sleep(60)
+        # Background process to port-forward for Kruize
+        subprocess.Popen([ "kubectl", "-n", "monitoring", "port-forward", f"pod/{KRUIZE_POD}", f"{AUTOTUNE_PORT}:8080"],
+            stdout=DEVNULL, stderr=DEVNULL, start_new_session=True)
+        time.sleep(60)
+        URL = "http://" + str(SERVER_IP) + ":" + str(AUTOTUNE_PORT)
 
 #    URL = "http://" + str(SERVER_IP) + ":" + str(AUTOTUNE_PORT)
     print ("\nKRUIZE AUTOTUNE URL = ", URL)
