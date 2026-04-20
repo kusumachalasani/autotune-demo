@@ -111,6 +111,9 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	      query=${query%&}
 	      jobUrl="https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/buildWithParameters?$query"
         else
+	      if [[ ${BENCHMARK_NAME} == "eap-standalone-web-hyperfoil" ]]; then
+		      JENKINS_SETUP_TOKEN=2018
+	      fi
 	      declare -A params
 	      params=(
 		      ["token"]="${JENKINS_SETUP_TOKEN}"
