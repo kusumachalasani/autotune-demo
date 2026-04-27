@@ -1,7 +1,7 @@
 {
     "experiment_name": "jvm_sample",
     "experiment_id": "jvm_sample",
-    "total_trials": 5
+    "total_trials": 5,
     "parallel_trials": 1,
     "objective_function": "1000 * (Throughput **1) / (Avg_Watts **2)",
     "value_type": "float",
