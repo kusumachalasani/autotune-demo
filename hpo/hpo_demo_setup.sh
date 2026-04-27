@@ -194,6 +194,8 @@ function hpo_experiments() {
 	## Step 1 : Start a new experiment with provided search space.
 	echo "curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}'"
 	http_response=$(curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}')
+	cat response.txt
+	echo ${http_response}
 	if [ "$http_response" != "200" ]; then
 		err_exit "Error:" $(cat response.txt)
 	fi
