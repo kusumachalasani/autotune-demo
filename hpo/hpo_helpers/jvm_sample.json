@@ -1,0 +1,44 @@
+{
+    "experiment_name": "jvm_sample",
+    "experiment_id": "jvm_sample",
+    "total_trials": 5
+    "parallel_trials": 1,
+    "objective_function": "1000 * (Throughput **1) / (Avg_Watts **2)",
+    "value_type": "float",
+    "hpo_algo_impl": "optuna_tpe",
+    "direction": "maximize",
+    "function_variables": [
+        {
+            "name": "Throughput",
+            "value_type": "float"
+        },
+        {
+            "name": "Avg_Watts",
+            "value_type": "float"
+        }
+    ],
+    "tunables": [
+        {
+            "name": "gc",
+            "value_type": "categorical",
+            "choices": ["G1GC", "ParallelGC", "SerialGC", "ShenandoahGC", "ZGC"]
+        },
+        {
+            "name": "FreqInlineSize",
+            "value_type": "integer",
+            "upper_bound": 500,
+            "lower_bound": 325,
+            "step": 1
+        },
+       {
+            "name": "StackTraceInThrowable",
+            "value_type": "categorical",
+            "choices": ["true", "false"]
+        },
+        {
+            "name": "nettyBufferCheck",
+            "value_type": "categorical",
+            "choices": ["true", "false"]
+        }
+    ]
+}
