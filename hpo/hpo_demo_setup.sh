@@ -127,6 +127,10 @@ function hpo_install() {
                         SERVICE_STATUS_NATIVE=$(ps -ef | grep service.py | grep -v grep | awk '{print $2}')
                         echo "Before SERVICE_STATUS_NATIVE= ${SERVICE_STATUS_NATIVE}"
                         ps -ef | grep src/service.py | grep -v grep | awk '{print $2}' | xargs kill -9 >/dev/null 2>&1
+						
+                        SERVICE_STATUS_NATIVE=$(ps -ef | grep service.py | grep -v grep | awk '{print $2}')
+                        echo "Before SERVICE_STATUS_NATIVE= ${SERVICE_STATUS_NATIVE}"
+                        ps -ef | grep src/service.py | grep -v grep | awk '{print $2}' | xargs kill -9 >/dev/null 2>&1
 
 			echo "Starting hpo with  ./deploy_hpo.sh -c ${CLUSTER_TYPE} -p 8092 --rest"
 			echo
