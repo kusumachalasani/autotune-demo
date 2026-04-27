@@ -194,7 +194,13 @@ function hpo_experiments() {
 	## Step 1 : Start a new experiment with provided search space.
 	echo "curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}'"
 	#http_response=$(curl -v --connect-timeout 60 -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}')
-	http_response=$(curl -s -v --connect-timeout 60 -H 'Content-Type: application/json' -H 'Expect:' -d '{ "operation": "EXP_TRIAL_GENERATE_NEW", "search_space": '"${exp_json}"'}' "${URL}/experiment_trials" -w "%{http_code}")
+	http_code=$(curl -s -v --connect-timeout 60 --max-time 120 \
+  -H 'Content-Type: application/json' \
+  -H 'Expect:' \
+  -o response_body.txt \
+  -w "%{http_code}" \
+  -d "{ \"operation\": \"EXP_TRIAL_GENERATE_NEW\", \"search_space\": ${exp_json}}" \
+  "${URL}/experiment_trials")
 	  
 
 	cat response.txt
