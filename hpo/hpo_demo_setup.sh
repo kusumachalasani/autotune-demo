@@ -194,20 +194,41 @@ function hpo_experiments() {
 	## Step 1 : Start a new experiment with provided search space.
 	echo "curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}'"
 	#http_response=$(curl -v --connect-timeout 60 -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}')
-	http_code=$(curl -s -v --connect-timeout 60 --max-time 120 \
+	#http_code=$(curl -s -v --connect-timeout 60 --max-time 120 -H 'Content-Type: application/json' -H 'Expect:' -o response_body.txt -w "%{http_code}" -d "{ \"operation\": \"EXP_TRIAL_GENERATE_NEW\", \"search_space\": ${exp_json}}"   "${URL}/experiment_trials")
+	response_file="response_body.txt"
+debug_file="curl_debug.log"
+
+http_code=$(curl -sS -v \
+  --connect-timeout 60 \
+  --max-time 120 \
   -H 'Content-Type: application/json' \
   -H 'Expect:' \
-  -o response_body.txt \
+  -o "$response_file" \
   -w "%{http_code}" \
-  -d "{ \"operation\": \"EXP_TRIAL_GENERATE_NEW\", \"search_space\": ${exp_json}}" \
-  "${URL}/experiment_trials")
+  -X POST \
+  -d "{ \"operation\": \"EXP_TRIAL_GENERATE_NEW\", \"search_space\": ${exp_json} }" \
+  "${URL}/experiment_trials" \
+  2> "$debug_file")
+
+# Check response
+if [[ "$http_code" -ne 200 ]]; then
+    echo "❌ Request failed with HTTP code: $http_code"
+    
+    echo "----- Response Body -----"
+    cat "$response_file"
+    
+    echo "----- Curl Debug (verbose) -----"
+    cat "$debug_file"
+    
+    	err_exit "Error:" $(cat response.txt)
+fi
 	  
 
-	cat response.txt
-	echo ${http_response}
-	if [ "$http_response" != "200" ]; then
-		err_exit "Error:" $(cat response.txt)
-	fi
+	#cat response.txt
+	#echo ${http_response}
+	#if [ "$http_response" != "200" ]; then
+	#	err_exit "Error:" $(cat response.txt)
+	#fi
 
 	## Looping through trials of an experiment
 	echo
