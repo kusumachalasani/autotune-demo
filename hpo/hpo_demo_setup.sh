@@ -214,6 +214,33 @@ echo ${test_response}
 echo "test.txt=============="
 cat test.txt
 
+echo "Trying out direct API experiment"
+# Create a minimal test JSON
+cat > test_minimal.json <<'EOF'
+{
+  "operation": "EXP_TRIAL_GENERATE_NEW",
+  "search_space": {
+    "experiment_name": "test_minimal",
+    "experiment_id": "test_minimal",
+    "total_trials": 5,
+    "parallel_trials": 1,
+    "objective_function": "Throughput",
+    "value_type": "float",
+    "hpo_algo_impl": "optuna_tpe",
+    "direction": "maximize",
+    "function_variables": [{"name": "Throughput", "value_type": "float"}],
+    "tunables": [
+      {"name": "test_param", "value_type": "integer", "upper_bound": 100, "lower_bound": 1, "step": 1}
+    ]
+  }
+}
+EOF
+
+# Test with minimal payload
+time curl -v -H 'Content-Type: application/json' \
+  http://localhost:8092/experiment_trials \
+  -d @test_minimal.json
+
 
 
 	echo "#######################################"
