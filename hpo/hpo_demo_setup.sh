@@ -188,11 +188,39 @@ function hpo_experiments() {
 		err_exit "Error: Invalid search space"
 	fi
 
+	echo "Before experiment starts, lets debug..."
+	echo "=== HPO Diagnostic Report ==="
+echo "Date: $(date)"
+echo ""
+echo "=== Python Version ==="
+python3 --version
+echo ""
+echo "=== Package Versions ==="
+pip3 list | grep -E "optuna|requests|grpcio|protobuf|scikit|pandas|numpy"
+echo ""
+echo "=== HPO Service Status ==="
+curl -s http://localhost:8092/health || echo "Health check failed"
+echo ""
+echo "=== System Resources ==="
+free -h
+df -h | grep -v tmpfs
+echo ""
+echo "=== Network ==="
+netstat -tulpn | grep 8092
+
+echo "curl -o test.txt  ${URL}"
+test_response=$(curl -o test.txt  ${URL})
+echo ${test_response}
+echo "test.txt=============="
+cat test.txt
+
+
+
 	echo "#######################################"
 	echo "Start a new experiment with search space json"
 	## Step 1 : Start a new experiment with provided search space.
-	echo "curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}'"
-	http_response=$(curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}')
+	echo "curl -v --max-time 30 -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}'"
+	http_response=$(curl -v --max-time 30 -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}')
 	if [ "$http_response" != "200" ]; then
 		err_exit "Error:" $(cat response.txt)
 	fi
