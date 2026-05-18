@@ -241,6 +241,45 @@ time curl -v -H 'Content-Type: application/json' \
   http://localhost:8092/experiment_trials \
   -d @test_minimal.json
 
+echo "=== Testing Direct JSON Inline ==="
+
+# Test 1: Ultra-minimal inline JSON
+echo "Test 1: Ultra-minimal experiment"
+time curl -v -X POST \
+  -H "Content-Type: application/json" \
+  http://localhost:8092/experiment_trials \
+  -d '{
+  "operation": "EXP_TRIAL_GENERATE_NEW",
+  "search_space": {
+    "experiment_name": "test_inline_minimal",
+    "experiment_id": "test_inline_minimal",
+    "total_trials": 3,
+    "parallel_trials": 1,
+    "objective_function": "value",
+    "value_type": "double",
+    "hpo_algo_impl": "optuna_tpe",
+    "direction": "maximize",
+    "function_variables": [
+      {
+        "name": "value",
+        "value_type": "double"
+      }
+    ],
+    "tunables": [
+      {
+        "name": "param1",
+        "value_type": "integer",
+        "upper_bound": 10,
+        "lower_bound": 1,
+        "step": 1
+      }
+    ]
+  }
+}'
+
+echo ""
+echo "=== Test 2: Check if experiment was created ==="
+curl -s http://localhost:8092/listexperiments | python3 -m json.tool
 
 
 	echo "#######################################"
