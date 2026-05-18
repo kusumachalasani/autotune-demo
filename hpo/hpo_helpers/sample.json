@@ -1,0 +1,32 @@
+{
+    "experiment_name": "experiment_sample",
+    "experiment_id": "a123",
+    "total_trials": 5,
+    "parallel_trials":1,
+    "objective_function": "THROUGHPUT_RATE",
+    "value_type": "double",
+    "hpo_algo_impl": "optuna_tpe",
+    "direction": "maximize",
+    "function_variables": [
+        {
+            "name": "THROUGHPUT_RATE",
+            "value_type": "double"
+        }
+    ],
+    "tunables": [
+        {
+            "name": "memoryRequest",
+            "value_type": "double",
+            "upper_bound": 1024,
+            "lower_bound": 270,
+            "step": 1
+        },
+        {
+            "name": "cpuRequest",
+            "value_type": "double",
+            "upper_bound": 1.5,
+            "lower_bound": 0.5,
+            "step": 0.1
+        }
+    ]
+}
