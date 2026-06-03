@@ -99,6 +99,22 @@ function prereq_check() {
 #   Start HPO
 ###########################################
 function hpo_install() {
+
+	echo "USE DEBUG BRANCH OF HPO"
+	echo "####################"
+	LOCAL_REPO_PATH="https://github.com/kusumachalasani/hpo.git"
+    BRANCH_NAME="debug"
+
+    # 1. If the hpo directory already exists, remove it cleanly
+    if [ -d "hpo" ]; then
+        echo "Found existing hpo directory. Removing it to pull your custom local branch..."
+        rm -rf hpo
+    fi
+
+    # 2. Clone from your local repository using the specified branch
+    echo "Cloning from local repo: ${LOCAL_REPO_PATH} (Branch: ${BRANCH_NAME})..."
+    git clone -b "${BRANCH_NAME}" "${LOCAL_REPO_PATH}" hpo
+	
 	echo
 	echo "#######################################"
 	echo "Start HPO Server"
