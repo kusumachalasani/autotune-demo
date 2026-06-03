@@ -259,7 +259,7 @@ time curl -v -H 'Content-Type: application/json' \
 
 echo "#################"
 echo "HPO LOG"
-cat hpo/hpo.log
+cat /tmp/kruize/autotune-demo/hpo/hpo.log
 
 echo "#################"
 echo "=== Testing Direct JSON Inline ==="
