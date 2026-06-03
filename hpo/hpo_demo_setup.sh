@@ -257,6 +257,11 @@ time curl -v -H 'Content-Type: application/json' \
   http://localhost:8092/experiment_trials \
   -d @test_minimal.json
 
+echo "#################"
+echo "HPO LOG"
+cat hpo/hpo.log
+
+echo "#################"
 echo "=== Testing Direct JSON Inline ==="
 
 # Test 1: Ultra-minimal inline JSON
