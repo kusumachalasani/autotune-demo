@@ -3,13 +3,13 @@
     "experiment_id": "first_responder_eap8_jvm_1",
     "total_trials": 2,
     "parallel_trials": 1,
-    "objective_function": "1000 * (Throughput **1) / (Rapl_Avg_Watts **2)",
+    "objective_function": "1000 * (specjweb_hf_WebjOPS **1) / (Rapl_Avg_Watts **2)",
     "value_type": "float",
     "hpo_algo_impl": "optuna_tpe",
     "direction": "maximize",
     "function_variables": [
         {
-            "name": "Throughput",
+            "name": "specjweb_hf_WebjOPS",
             "value_type": "float"
         },
         {
