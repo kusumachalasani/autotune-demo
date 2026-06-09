@@ -1,6 +1,6 @@
 {
-    "experiment_name": "first_responder_eap8_jvm_1",
-    "experiment_id": "first_responder_eap8_jvm_1",
+    "experiment_name": "specj_eap8_jvm21_1",
+    "experiment_id": "specj_eap8_jvm21_1",
     "total_trials": 2,
     "parallel_trials": 1,
     "objective_function": "1000 * (specjweb_hf_WebjOPS **1) / (Rapl_Avg_Watts **2)",
