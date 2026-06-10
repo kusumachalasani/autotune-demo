@@ -9,8 +9,8 @@ from hpo_helpers.utils import *
 ## Input: HPO config json
 ## Output: ENV_OPTIONS (includes SPECj CLI commands)
 def get_envoptions(hpoconfigjson):
-    tunables_jvm_categorical = ["TieredCompilation", "AllowParallelDefineClass", "AllowVectorizeOnDemand", "AlwaysCompileLoopMethods", "AlwaysPreTouch", "AlwaysTenure", "BackgroundCompilation", "DoEscapeAnalysis", "UseInlineCaches", "UseLoopPredicate", "UseStringDeduplication", "UseSuperWord", "UseTypeSpeculation", "StackTraceInThrowable" , "nettyBufferCheck", "gc"]
-    tunables_jvm_values = ["FreqInlineSize", "MaxInlineLevel", "MinInliningThreshold", "CompileThreshold", "CompileThresholdScaling", "ConcGCThreads", "InlineSmallCode", "LoopUnrollLimit", "LoopUnrollMin", "MinSurvivorRatio", "NewRatio", "TieredStopAtLevel", "MinHeapFreeRatio", "MaxHeapFreeRatio", "GCTimeRatio", "AdaptiveSizePolicyWeight"]
+    tunables_jvm_categorical = ["TieredCompilation", "AllowParallelDefineClass", "AllowVectorizeOnDemand", "AlwaysCompileLoopMethods", "AlwaysPreTouch", "AlwaysTenure", "BackgroundCompilation", "DoEscapeAnalysis", "UseInlineCaches", "UseLoopPredicate", "UseStringDeduplication", "UseSuperWord", "UseTypeSpeculation", "StackTraceInThrowable" , "nettyBufferCheck", "ParallelRefProcEnabled", "gc"]
+    tunables_jvm_values = ["FreqInlineSize", "MaxInlineLevel", "MinInliningThreshold", "CompileThreshold", "CompileThresholdScaling", "ConcGCThreads", "InlineSmallCode", "LoopUnrollLimit", "LoopUnrollMin", "MinSurvivorRatio", "NewRatio", "TieredStopAtLevel", "MinHeapFreeRatio", "MaxHeapFreeRatio", "GCTimeRatio", "AdaptiveSizePolicyWeight", "AutoBoxCacheMax"]
     tunables_quarkus = ["quarkus.thread-pool.core-threads", "quarkus.thread-pool.queue-size", "quarkus.datasource.jdbc.min-size", "quarkus.datasource.jdbc.max-size", "quarkus.hibernate-orm.jdbc.statement-fetch-size", "quarkus.http.io-threads"]
     tunables_resources = ["memoryRequest", "cpuRequest"]
     excluded_tunables = set(tunables_jvm_categorical + tunables_jvm_values + tunables_quarkus + tunables_resources)
