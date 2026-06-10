@@ -19,11 +19,312 @@
     ],
     "tunables": [
         {
+            "name": "SUBSYSTEM_IO_WORKER_HTTPWORKER__IO_THREADS",
+            "value_type": "integer",
+            "upper_bound": 36,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_HTTPWORKER__TASK_MAX_THREADS",
+            "value_type": "integer",
+            "upper_bound": 400,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_INSPROVIDERWORKER__IO_THREADS",
+            "value_type": "integer",
+            "upper_bound": 36,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_INSPROVIDERWORKER__TASK_MAX_THREADS",
+            "value_type": "integer",
+            "upper_bound": 400,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_VEHICLEWORKER__IO_THREADS",
+            "value_type": "integer",
+            "upper_bound": 36,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_VEHICLEWORKER__TASK_MAX_THREADS",
+            "value_type": "integer",
+            "upper_bound": 400,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_SUPPLIERWORKER__IO_THREADS",
+            "value_type": "integer",
+            "upper_bound": 36,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_SUPPLIERWORKER__TASK_MAX_THREADS",
+            "value_type": "integer",
+            "upper_bound": 400,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_WSWORKER__IO_THREADS",
+            "value_type": "integer",
+            "upper_bound": 36,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_WSWORKER__TASK_MAX_THREADS",
+            "value_type": "integer",
+            "upper_bound": 400,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_EJBWORKER__IO_THREADS",
+            "value_type": "integer",
+            "upper_bound": 36,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_IO_WORKER_EJBWORKER__TASK_MAX_THREADS",
+            "value_type": "integer",
+            "upper_bound": 400,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_IO_BUFFER_POOL_HTTPBUFFER__BUFFERS_PER_SLICE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_IO_BUFFER_POOL_WSBUFFER__BUFFERS_PER_SLICE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_IO_BUFFER_POOL_SUPPLIERBUFFER__BUFFERS_PER_SLICE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_IO_BUFFER_POOL_VEHICLEBUFFER__BUFFERS_PER_SLICE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_IO_BUFFER_POOL_INSPROVIDERBUFFER__BUFFERS_PER_SLICE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_UNDERTOW_SERVER_DEFAULT_SERVER_HTTP_LISTENER_HTTP__MAX_CONNECTIONS",
+            "value_type": "integer",
+            "upper_bound": 20000,
+            "lower_bound": 1,
+            "step": 100
+        },
+        {
+            "name": "SUBSYSTEM_UNDERTOW_SERVER_DEFAULT_SERVER_HTTP_LISTENER_HTTPINSPROVIDER__MAX_CONNECTIONS",
+            "value_type": "integer",
+            "upper_bound": 20000,
+            "lower_bound": 1,
+            "step": 100
+        },
+        {
+            "name": "SUBSYSTEM_UNDERTOW_SERVER_DEFAULT_SERVER_HTTP_LISTENER_HTTPWS__MAX_CONNECTIONS",
+            "value_type": "integer",
+            "upper_bound": 20000,
+            "lower_bound": 1,
+            "step": 100
+        },
+        {
+            "name": "SUBSYSTEM_UNDERTOW_SERVER_DEFAULT_SERVER_HTTP_LISTENER_HTTPSUPPLIER__MAX_CONNECTIONS",
+            "value_type": "integer",
+            "upper_bound": 20000,
+            "lower_bound": 1,
+            "step": 100
+        },
+        {
+            "name": "SUBSYSTEM_UNDERTOW_SERVER_DEFAULT_SERVER_HTTP_LISTENER_HTTPVEHICLE__MAX_CONNECTIONS",
+            "value_type": "integer",
+            "upper_bound": 20000,
+            "lower_bound": 1,
+            "step": 100
+        },
+        {
+            "name": "SUBSYSTEM_UNDERTOW_BUFFER_CACHE_SERVLET__MAX_REGIONS",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
             "name": "SUBSYSTEM_EJB3_STRICT_MAX_BEAN_INSTANCE_POOL_SLSB_STRICT_MAX_POOL__MAX_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_EJB3_STRICT_MAX_BEAN_INSTANCE_POOL_DEFAULT_POOL__MAX_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_EJB3_STRICT_MAX_BEAN_INSTANCE_POOL_WEB_POOL__MAX_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_EJB3_THREAD_POOL_DEFAULT__MAX_THREADS",
             "value_type": "integer",
             "upper_bound": 1000,
             "lower_bound": 1,
             "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_REMOTING__MAX_INBOUND_MESSAGES",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_EE_MANAGED_EXECUTOR_SERVICE_DEFAULT__CORE_THREADS",
+            "value_type": "integer",
+            "upper_bound": 64,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_EE_MANAGED_EXECUTOR_SERVICE_DEFAULT__MAX_THREADS",
+            "value_type": "integer",
+            "upper_bound": 1000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJINSURANCEDS__MAX_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJINSURANCEDS__MIN_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 100,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJINSURANCEPROVIDERDS__MAX_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJINSURANCEPROVIDERDS__MIN_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 100,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJMFGDS__MAX_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJMFGDS__MIN_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 100,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJORDERDS__MAX_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJORDERDS__MIN_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 100,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJSUPPLIERDS__MAX_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJSUPPLIERDS__MIN_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 100,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJVEHICLEDS__MAX_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJVEHICLEDS__MIN_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 100,
+            "lower_bound": 1,
+            "step": 1
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJLOADERDS__MAX_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 10000,
+            "lower_bound": 1,
+            "step": 10
+        },
+        {
+            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_SPECJLOADERDS__MIN_POOL_SIZE",
+            "value_type": "integer",
+            "upper_bound": 100,
+            "lower_bound": 1,
+            "step": 1
         },
         {
             "name": "SUBSYSTEM_EJB3__DEFAULT_STATEFUL_BEAN_SESSION_TIMEOUT",
@@ -31,20 +332,6 @@
             "upper_bound": 10000,
             "lower_bound": -1,
             "step": 100
-        },
-        {
-            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_FRDemoDS__MIN_POOL_SIZE",
-            "value_type": "integer",
-            "upper_bound": 10,
-            "lower_bound": 1,
-            "step": 1
-        },
-        {
-            "name": "SUBSYSTEM_DATASOURCES_DATA_SOURCE_FRDemoDS__MAX_POOL_SIZE",
-            "value_type": "integer",
-            "upper_bound": 100,
-            "lower_bound": 10,
-            "step": 10
         },
         {
             "name": "SUBSYSTEM_IO_WORKER_DEFAULT__TASK_MAX_THREADS",
