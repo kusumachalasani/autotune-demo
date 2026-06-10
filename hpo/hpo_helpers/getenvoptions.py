@@ -13,20 +13,6 @@ def get_envoptions(hpoconfigjson):
     tunables_jvm_values = ["FreqInlineSize", "MaxInlineLevel", "MinInliningThreshold", "CompileThreshold", "CompileThresholdScaling", "ConcGCThreads", "InlineSmallCode", "LoopUnrollLimit", "LoopUnrollMin", "MinSurvivorRatio", "NewRatio", "TieredStopAtLevel", "MinHeapFreeRatio", "MaxHeapFreeRatio", "GCTimeRatio", "AdaptiveSizePolicyWeight"]
     tunables_quarkus = ["quarkus.thread-pool.core-threads", "quarkus.thread-pool.queue-size", "quarkus.datasource.jdbc.min-size", "quarkus.datasource.jdbc.max-size", "quarkus.hibernate-orm.jdbc.statement-fetch-size", "quarkus.http.io-threads"]
     tunables_resources = ["memoryRequest", "cpuRequest"]
-    
-    # Define SPECj-specific tunables that need CLI command conversion
-    specj_tunables_prefix = [
-        "SUBSYSTEM_IO_WORKER_",
-        "SUBSYSTEM_IO_BUFFER_POOL_",
-        "SUBSYSTEM_UNDERTOW_SERVER_",
-        "SUBSYSTEM_UNDERTOW_BUFFER_CACHE_",
-        "SUBSYSTEM_EJB3_STRICT_MAX_BEAN_INSTANCE_POOL_",
-        "SUBSYSTEM_EJB3_THREAD_POOL_",
-        "SUBSYSTEM_REMOTING_",
-        "SUBSYSTEM_EE_MANAGED_EXECUTOR_SERVICE_",
-        "SUBSYSTEM_DATASOURCES_DATA_SOURCE_"
-    ]
-    
     excluded_tunables = set(tunables_jvm_categorical + tunables_jvm_values + tunables_quarkus + tunables_resources)
 
     with open(hpoconfigjson) as data_file:
@@ -40,13 +26,15 @@ def get_envoptions(hpoconfigjson):
         tunable_name = item['tunable_name']
         tunable_value = item['tunable_value']
         
-        # Check if this is a SPECj tunable
-        is_specj_tunable = any(tunable_name.startswith(prefix) for prefix in specj_tunables_prefix)
-        
-        if is_specj_tunable:
-            # Convert to JBoss CLI command
-            cli_command = convert_specj_tunable_to_cli(tunable_name, tunable_value)
-            if cli_command:
+        # Check if this is a SPECj CLI tunable (starts with /subsystem=)
+        if tunable_name.startswith('/subsystem='):
+            # Parse CLI format: /subsystem=.../resource=name:attribute
+            # Convert to write-attribute command
+            parts = tunable_name.split(':')
+            if len(parts) == 2:
+                path = parts[0]
+                attribute = parts[1]
+                cli_command = f"{path}:write-attribute(name={attribute},value={tunable_value})"
                 specj_cli_commands.append(cli_command)
         elif tunable_name not in excluded_tunables:
             # Regular ENV option
@@ -63,90 +51,6 @@ def get_envoptions(hpoconfigjson):
     
     ENV_OPTIONS = f'"{ENV_OPTIONS}"' if ENV_OPTIONS else ENV_OPTIONS
     print(str(ENV_OPTIONS))
-
-
-def convert_specj_tunable_to_cli(tunable_name, tunable_value):
-    """
-    Converts a SPECj tunable to JBoss CLI write-attribute command.
-    
-    Tunable name format: SUBSYSTEM_<subsystem>_<resource>_<name>__<attribute>
-    CLI command format: /subsystem=<subsystem>/<resource>=<name>:write-attribute(name=<attribute>,value=<value>)
-    """
-    # Parse the tunable name to extract components
-    parts = tunable_name.split('__')
-    if len(parts) != 2:
-        return None
-        
-    path_part = parts[0]  # e.g., SUBSYSTEM_IO_WORKER_HTTPWORKER
-    attribute = parts[1]  # e.g., IO_THREADS
-    
-    # Convert attribute to kebab-case (lowercase with hyphens)
-    attribute_cli = attribute.lower().replace('_', '-')
-    
-    # Remove SUBSYSTEM_ prefix and split remaining parts
-    path_without_prefix = path_part.replace('SUBSYSTEM_', '')
-    path_components = path_without_prefix.split('_')
-    
-    # Build the CLI path based on the subsystem type
-    cli_path = ""
-    
-    if path_without_prefix.startswith('IO_WORKER_'):
-        # Format: /subsystem=io/worker=<name>
-        worker_name = '_'.join(path_components[2:])
-        worker_name_cli = worker_name[0].lower() + worker_name[1:] if len(worker_name) > 1 else worker_name.lower()
-        cli_path = f"/subsystem=io/worker={worker_name_cli}"
-        
-    elif path_without_prefix.startswith('IO_BUFFER_POOL_'):
-        # Format: /subsystem=io/buffer-pool=<name>
-        pool_name = '_'.join(path_components[3:])
-        pool_name_cli = pool_name[0].lower() + pool_name[1:] if len(pool_name) > 1 else pool_name.lower()
-        cli_path = f"/subsystem=io/buffer-pool={pool_name_cli}"
-        
-    elif path_without_prefix.startswith('UNDERTOW_SERVER_DEFAULT_SERVER_HTTP_LISTENER_'):
-        # Format: /subsystem=undertow/server=default-server/http-listener=<name>
-        listener_name = '_'.join(path_components[5:])
-        listener_name_cli = listener_name[0].lower() + listener_name[1:] if len(listener_name) > 1 else listener_name.lower()
-        cli_path = f"/subsystem=undertow/server=default-server/http-listener={listener_name_cli}"
-        
-    elif path_without_prefix.startswith('UNDERTOW_BUFFER_CACHE_'):
-        # Format: /subsystem=undertow/buffer-cache=<name>
-        cache_name = '_'.join(path_components[3:])
-        cache_name_cli = cache_name.lower()
-        cli_path = f"/subsystem=undertow/buffer-cache={cache_name_cli}"
-        
-    elif path_without_prefix.startswith('EJB3_STRICT_MAX_BEAN_INSTANCE_POOL_'):
-        # Format: /subsystem=ejb3/strict-max-bean-instance-pool=<name>
-        pool_name = '_'.join(path_components[5:])
-        pool_name_cli = pool_name.lower().replace('_', '-')
-        cli_path = f"/subsystem=ejb3/strict-max-bean-instance-pool={pool_name_cli}"
-        
-    elif path_without_prefix.startswith('EJB3_THREAD_POOL_'):
-        # Format: /subsystem=ejb3/thread-pool=<name>
-        pool_name = '_'.join(path_components[3:])
-        pool_name_cli = pool_name.lower()
-        cli_path = f"/subsystem=ejb3/thread-pool={pool_name_cli}"
-        
-    elif path_without_prefix.startswith('REMOTING_'):
-        # Format: /subsystem=remoting
-        cli_path = "/subsystem=remoting"
-        
-    elif path_without_prefix.startswith('EE_MANAGED_EXECUTOR_SERVICE_'):
-        # Format: /subsystem=ee/managed-executor-service=<name>
-        service_name = '_'.join(path_components[4:])
-        service_name_cli = service_name.lower()
-        cli_path = f"/subsystem=ee/managed-executor-service={service_name_cli}"
-        
-    elif path_without_prefix.startswith('DATASOURCES_DATA_SOURCE_'):
-        # Format: /subsystem=datasources/data-source=<name>
-        ds_name = '_'.join(path_components[3:])
-        # Keep original case for datasource names (SPECjInsuranceDS, etc.)
-        cli_path = f"/subsystem=datasources/data-source={ds_name}"
-    
-    # Build the complete CLI command
-    if cli_path:
-        return f"{cli_path}:write-attribute(name={attribute_cli},value={tunable_value})"
-    
-    return None
 
 
 ## Convert the tunable configs of JDK and Quarkus generated by HPO to JDK_JAVA_OPTIONS
@@ -211,3 +115,4 @@ def get_jdkoptions(hpoconfigjson):
     JDK_JAVA_OPTIONS = f'"{JDK_JAVA_OPTIONS}"' if JDK_JAVA_OPTIONS else JDK_JAVA_OPTIONS
     print(str(JDK_JAVA_OPTIONS))
 
+# Made with Bob
