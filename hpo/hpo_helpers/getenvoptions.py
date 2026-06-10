@@ -57,14 +57,21 @@ def get_envoptions(hpoconfigjson):
 ## Input: HPO config json
 ## Output: JDK_JAVA_OPTIONS
 def get_jdkoptions(hpoconfigjson):
-    tunables_jvm_categorical = ["TieredCompilation", "AllowParallelDefineClass", "AllowVectorizeOnDemand", "AlwaysCompileLoopMethods", "AlwaysPreTouch", "AlwaysTenure", "BackgroundCompilation", "DoEscapeAnalysis", "UseInlineCaches", "UseLoopPredicate", "UseStringDeduplication", "UseSuperWord", "UseTypeSpeculation", "StackTraceInThrowable" , "nettyBufferCheck", "gc"]
-    tunables_jvm_values = ["FreqInlineSize", "MaxInlineLevel", "MinInliningThreshold", "CompileThreshold", "CompileThresholdScaling", "ConcGCThreads", "InlineSmallCode", "LoopUnrollLimit", "LoopUnrollMin", "MinSurvivorRatio", "NewRatio", "TieredStopAtLevel", "MinHeapFreeRatio", "MaxHeapFreeRatio", "GCTimeRatio", "AdaptiveSizePolicyWeight"]
+    tunables_jvm_categorical = ["TieredCompilation", "AllowParallelDefineClass", "AllowVectorizeOnDemand", "AlwaysCompileLoopMethods", "AlwaysPreTouch", "AlwaysTenure", "BackgroundCompilation", "DoEscapeAnalysis", "UseInlineCaches", "UseLoopPredicate", "UseStringDeduplication", "UseSuperWord", "UseTypeSpeculation", "StackTraceInThrowable" , "nettyBufferCheck", "ParallelRefProcEnabled", "gc"]
+    tunables_jvm_values = ["FreqInlineSize", "MaxInlineLevel", "MinInliningThreshold", "CompileThreshold", "CompileThresholdScaling", "ConcGCThreads", "InlineSmallCode", "LoopUnrollLimit", "LoopUnrollMin", "MinSurvivorRatio", "NewRatio", "TieredStopAtLevel", "MinHeapFreeRatio", "MaxHeapFreeRatio", "GCTimeRatio", "AdaptiveSizePolicyWeight", "AutoBoxCacheMax"]
     tunables_quarkus = ["quarkus.thread-pool.core-threads", "quarkus.thread-pool.queue-size", "quarkus.datasource.jdbc.min-size", "quarkus.datasource.jdbc.max-size", "quarkus.hibernate-orm.jdbc.statement-fetch-size", "quarkus.http.io-threads"]
 
     JDK_JAVA_OPTIONS = ""
 
     with open(hpoconfigjson) as data_file:
         sstunables = json.load(data_file)
+
+    # Check if this is a SPECj benchmark by looking for SPECj-specific tunables
+    is_specj = any(item['tunable_name'].startswith('/subsystem=') for item in sstunables)
+    
+    # Add hardcoded SPECj JVM parameters if this is a SPECj benchmark
+    if is_specj:
+        JDK_JAVA_OPTIONS = "-Xmx16g -Xms16g -XX:+UseLargePages -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true"
 
     for st in sstunables:
         for btunable in tunables_jvm_categorical:

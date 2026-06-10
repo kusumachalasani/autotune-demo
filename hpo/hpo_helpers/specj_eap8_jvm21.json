@@ -22,323 +22,316 @@
             "name": "/subsystem=io/worker=httpWorker:io-threads",
             "value_type": "integer",
             "upper_bound": 36,
-            "lower_bound": 1,
-            "step": 1
+            "lower_bound": 2,
+            "step": 2
         },
         {
             "name": "/subsystem=io/worker=httpWorker:task-max-threads",
             "value_type": "integer",
             "upper_bound": 400,
-            "lower_bound": 1,
+            "lower_bound": 10,
             "step": 10
         },
         {
             "name": "/subsystem=io/worker=insProviderWorker:io-threads",
             "value_type": "integer",
             "upper_bound": 36,
-            "lower_bound": 1,
-            "step": 1
+            "lower_bound": 2,
+            "step": 2
         },
         {
             "name": "/subsystem=io/worker=insProviderWorker:task-max-threads",
             "value_type": "integer",
             "upper_bound": 400,
-            "lower_bound": 1,
+            "lower_bound": 10,
             "step": 10
         },
         {
             "name": "/subsystem=io/worker=vehicleWorker:io-threads",
             "value_type": "integer",
             "upper_bound": 36,
-            "lower_bound": 1,
-            "step": 1
+            "lower_bound": 2,
+            "step": 2
         },
         {
             "name": "/subsystem=io/worker=vehicleWorker:task-max-threads",
             "value_type": "integer",
             "upper_bound": 400,
-            "lower_bound": 1,
+            "lower_bound": 10,
             "step": 10
         },
         {
             "name": "/subsystem=io/worker=supplierWorker:io-threads",
             "value_type": "integer",
             "upper_bound": 36,
-            "lower_bound": 1,
-            "step": 1
+            "lower_bound": 2,
+            "step": 2
         },
         {
             "name": "/subsystem=io/worker=supplierWorker:task-max-threads",
             "value_type": "integer",
             "upper_bound": 400,
-            "lower_bound": 1,
+            "lower_bound": 10,
             "step": 10
         },
         {
             "name": "/subsystem=io/worker=wsWorker:io-threads",
             "value_type": "integer",
             "upper_bound": 36,
-            "lower_bound": 1,
-            "step": 1
+            "lower_bound": 2,
+            "step": 2
         },
         {
             "name": "/subsystem=io/worker=wsWorker:task-max-threads",
             "value_type": "integer",
             "upper_bound": 400,
-            "lower_bound": 1,
+            "lower_bound": 10,
             "step": 10
         },
         {
             "name": "/subsystem=io/worker=ejbWorker:io-threads",
             "value_type": "integer",
             "upper_bound": 36,
-            "lower_bound": 1,
-            "step": 1
+            "lower_bound": 2,
+            "step": 2
         },
         {
             "name": "/subsystem=io/worker=ejbWorker:task-max-threads",
             "value_type": "integer",
             "upper_bound": 400,
-            "lower_bound": 1,
+            "lower_bound": 10,
             "step": 10
         },
         {
             "name": "/subsystem=io/buffer-pool=httpBuffer:buffers-per-slice",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 100
         },
         {
             "name": "/subsystem=io/buffer-pool=wsBuffer:buffers-per-slice",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 100
         },
         {
             "name": "/subsystem=io/buffer-pool=supplierBuffer:buffers-per-slice",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 100
         },
         {
             "name": "/subsystem=io/buffer-pool=vehicleBuffer:buffers-per-slice",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 100
         },
         {
             "name": "/subsystem=io/buffer-pool=insProviderBuffer:buffers-per-slice",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 100
         },
         {
             "name": "/subsystem=undertow/server=default-server/http-listener=http:max-connections",
             "value_type": "integer",
             "upper_bound": 20000,
-            "lower_bound": 1,
-            "step": 100
+            "lower_bound": 100,
+            "step": 200
         },
         {
             "name": "/subsystem=undertow/server=default-server/http-listener=httpInsProvider:max-connections",
             "value_type": "integer",
             "upper_bound": 20000,
-            "lower_bound": 1,
-            "step": 100
+            "lower_bound": 100,
+            "step": 200
         },
         {
             "name": "/subsystem=undertow/server=default-server/http-listener=httpWs:max-connections",
             "value_type": "integer",
             "upper_bound": 20000,
-            "lower_bound": 1,
-            "step": 100
+            "lower_bound": 100,
+            "step": 200
         },
         {
             "name": "/subsystem=undertow/server=default-server/http-listener=httpSupplier:max-connections",
             "value_type": "integer",
             "upper_bound": 20000,
-            "lower_bound": 1,
-            "step": 100
+            "lower_bound": 100,
+            "step": 200
         },
         {
             "name": "/subsystem=undertow/server=default-server/http-listener=httpVehicle:max-connections",
             "value_type": "integer",
             "upper_bound": 20000,
-            "lower_bound": 1,
-            "step": 100
+            "lower_bound": 100,
+            "step": 200
         },
         {
             "name": "/subsystem=undertow/buffer-cache=servlet:max-regions",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 100
         },
         {
             "name": "/subsystem=ejb3/strict-max-bean-instance-pool=slsb-strict-max-pool:max-pool-size",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 100
         },
         {
             "name": "/subsystem=ejb3/strict-max-bean-instance-pool=default-pool:max-pool-size",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 100
         },
         {
             "name": "/subsystem=ejb3/strict-max-bean-instance-pool=web-pool:max-pool-size",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 100
         },
         {
             "name": "/subsystem=ejb3/thread-pool=default:max-threads",
             "value_type": "integer",
             "upper_bound": 1000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 20
         },
         {
             "name": "/subsystem=remoting:max-inbound-messages",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 100
         },
         {
             "name": "/subsystem=ee/managed-executor-service=default:core-threads",
             "value_type": "integer",
             "upper_bound": 64,
-            "lower_bound": 1,
-            "step": 1
+            "lower_bound": 2,
+            "step": 2
         },
         {
             "name": "/subsystem=ee/managed-executor-service=default:max-threads",
             "value_type": "integer",
             "upper_bound": 1000,
-            "lower_bound": 1,
-            "step": 10
+            "lower_bound": 10,
+            "step": 20
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjInsuranceDS:max-pool-size",
             "value_type": "integer",
-            "upper_bound": 10000,
-            "lower_bound": 1,
+            "upper_bound": 500,
+            "lower_bound": 50,
             "step": 10
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjInsuranceDS:min-pool-size",
             "value_type": "integer",
-            "upper_bound": 100,
-            "lower_bound": 1,
-            "step": 1
+            "upper_bound": 50,
+            "lower_bound": 5,
+            "step": 5
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjInsuranceProviderDS:max-pool-size",
             "value_type": "integer",
-            "upper_bound": 10000,
-            "lower_bound": 1,
+            "upper_bound": 500,
+            "lower_bound": 50,
             "step": 10
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjInsuranceProviderDS:min-pool-size",
             "value_type": "integer",
-            "upper_bound": 100,
-            "lower_bound": 1,
-            "step": 1
+            "upper_bound": 50,
+            "lower_bound": 5,
+            "step": 5
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjMfgDS:max-pool-size",
             "value_type": "integer",
-            "upper_bound": 10000,
-            "lower_bound": 1,
+            "upper_bound": 500,
+            "lower_bound": 50,
             "step": 10
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjMfgDS:min-pool-size",
             "value_type": "integer",
-            "upper_bound": 100,
-            "lower_bound": 1,
-            "step": 1
+            "upper_bound": 50,
+            "lower_bound": 5,
+            "step": 5
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjOrderDS:max-pool-size",
             "value_type": "integer",
-            "upper_bound": 10000,
-            "lower_bound": 1,
+            "upper_bound": 500,
+            "lower_bound": 50,
             "step": 10
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjOrderDS:min-pool-size",
             "value_type": "integer",
-            "upper_bound": 100,
-            "lower_bound": 1,
-            "step": 1
+            "upper_bound": 50,
+            "lower_bound": 5,
+            "step": 5
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjSupplierDS:max-pool-size",
             "value_type": "integer",
-            "upper_bound": 10000,
-            "lower_bound": 1,
+            "upper_bound": 500,
+            "lower_bound": 50,
             "step": 10
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjSupplierDS:min-pool-size",
             "value_type": "integer",
-            "upper_bound": 100,
-            "lower_bound": 1,
-            "step": 1
+            "upper_bound": 50,
+            "lower_bound": 5,
+            "step": 5
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjVehicleDS:max-pool-size",
             "value_type": "integer",
-            "upper_bound": 10000,
-            "lower_bound": 1,
+            "upper_bound": 500,
+            "lower_bound": 50,
             "step": 10
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjVehicleDS:min-pool-size",
             "value_type": "integer",
-            "upper_bound": 100,
-            "lower_bound": 1,
-            "step": 1
+            "upper_bound": 50,
+            "lower_bound": 5,
+            "step": 5
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjLoaderDS:max-pool-size",
             "value_type": "integer",
-            "upper_bound": 10000,
-            "lower_bound": 1,
+            "upper_bound": 500,
+            "lower_bound": 50,
             "step": 10
         },
         {
             "name": "/subsystem=datasources/data-source=SPECjLoaderDS:min-pool-size",
             "value_type": "integer",
-            "upper_bound": 100,
-            "lower_bound": 1,
-            "step": 1
-        },
-        {
-            "name": "SUBSYSTEM_EJB3__DEFAULT_STATEFUL_BEAN_SESSION_TIMEOUT",
-            "value_type": "integer",
-            "upper_bound": 10000,
-            "lower_bound": -1,
-            "step": 100
+            "upper_bound": 50,
+            "lower_bound": 5,
+            "step": 5
         },
         {
             "name": "SUBSYSTEM_IO_WORKER_DEFAULT__TASK_MAX_THREADS",
             "value_type": "integer",
             "upper_bound": 500,
-            "lower_bound": 1,
-            "step": 4
+            "lower_bound": 10,
+            "step": 10
         },
         {
             "name": "SUBSYSTEM_UNDERTOW_BYTE_BUFFER_POOL_DEFAULT__DIRECT",
@@ -360,7 +353,7 @@
             "value_type": "integer",
             "upper_bound": 500,
             "lower_bound": 325,
-            "step": 1
+            "step": 25
         },
         {
             "name": "MaxInlineLevel",
@@ -373,92 +366,92 @@
             "name": "CompileThreshold",
             "value_type": "integer",
             "upper_bound": 10000,
-            "lower_bound": 1000,
-            "step": 10
+            "lower_bound": 2000,
+            "step": 200
         },
         {
             "name": "CompileThresholdScaling",
             "value_type": "double",
             "upper_bound": 10,
             "lower_bound": 1,
-            "step": 0.1
+            "step": 0.5
         },
         {
             "name": "ConcGCThreads",
             "value_type": "integer",
             "upper_bound": 32,
-            "lower_bound": 1,
-            "step": 1
+            "lower_bound": 4,
+            "step": 4
         },
         {
             "name": "InlineSmallCode",
             "value_type": "integer",
             "upper_bound": 5000,
             "lower_bound": 500,
-            "step": 5
-        }, 
+            "step": 100
+        },
         {
             "name": "LoopUnrollLimit",
             "value_type": "integer",
             "upper_bound": 250,
             "lower_bound": 20,
-            "step": 1
+            "step": 10
         },
         {
             "name": "LoopUnrollMin",
             "value_type": "integer",
             "upper_bound": 20,
             "lower_bound": 0,
-            "step": 1
+            "step": 4
         },
         {
             "name": "MinSurvivorRatio",
             "value_type": "integer",
-            "upper_bound": 48,
+            "upper_bound": 32,
             "lower_bound": 3,
             "step": 1
-        }, 
+        },
         {
             "name": "NewRatio",
             "value_type": "integer",
             "upper_bound": 10,
-            "lower_bound": 1,
+            "lower_bound": 2,
             "step": 1
         },
         {
             "name": "TieredStopAtLevel",
             "value_type": "integer",
             "upper_bound": 4,
-            "lower_bound": 1,
+            "lower_bound": 3,
             "step": 1
         },
         {
             "name": "MinHeapFreeRatio",
             "value_type": "integer",
-            "upper_bound": 70,
-            "lower_bound": 5,
-            "step": 1
+            "upper_bound": 60,
+            "lower_bound": 20,
+            "step": 5
         },
         {
             "name": "MaxHeapFreeRatio",
             "value_type": "integer",
             "upper_bound": 100,
-            "lower_bound": 71,
-            "step": 1
+            "lower_bound": 70,
+            "step": 5
         },
         {
             "name": "GCTimeRatio",
             "value_type": "integer",
             "upper_bound": 100,
             "lower_bound": 1,
-            "step": 1
+            "step": 9
         },
         {
             "name": "AdaptiveSizePolicyWeight",
             "value_type": "integer",
             "upper_bound": 100,
             "lower_bound": 1,
-            "step": 1
+            "step": 9
         },
         {
             "name": "TieredCompilation",
@@ -526,14 +519,21 @@
             "choices": ["true", "false"]
         },
         {
-            "name": "StackTraceInThrowable",
+            "name": "nettyBufferCheck",
             "value_type": "categorical",
             "choices": ["true", "false"]
         },
         {
-            "name": "nettyBufferCheck",
+            "name": "ParallelRefProcEnabled",
             "value_type": "categorical",
             "choices": ["true", "false"]
+        },
+        {
+            "name": "AutoBoxCacheMax",
+            "value_type": "integer",
+            "upper_bound": 2000000,
+            "lower_bound": 10000,
+            "step": 10000
         }
     ]
 }
