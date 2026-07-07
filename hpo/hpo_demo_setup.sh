@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+#
 # Copyright (c) 2020, 2022 Red Hat, IBM Corporation and others.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -99,6 +99,22 @@ function prereq_check() {
 #   Start HPO
 ###########################################
 function hpo_install() {
+
+	echo "USE DEBUG BRANCH OF HPO"
+	echo "####################"
+	LOCAL_REPO_PATH="https://github.com/kusumachalasani/hpo.git"
+    BRANCH_NAME="debug"
+
+    # 1. If the hpo directory already exists, remove it cleanly
+    if [ -d "hpo" ]; then
+        echo "Found existing hpo directory. Removing it to pull your custom local branch..."
+        rm -rf hpo
+    fi
+
+    # 2. Clone from your local repository using the specified branch
+    echo "Cloning from local repo: ${LOCAL_REPO_PATH} (Branch: ${BRANCH_NAME})..."
+    git clone -b "${BRANCH_NAME}" "${LOCAL_REPO_PATH}" hpo
+	
 	echo
 	echo "#######################################"
 	echo "Start HPO Server"
@@ -124,9 +140,9 @@ function hpo_install() {
 		if [[ ${CLUSTER_TYPE} == "native" ]]; then
 			echo
 			echo "Terminating before starting"
-                        SERVICE_STATUS_NATIVE=$(ps -ef | grep service.py | grep -v grep | awk '{print $2}')
-                        echo "Before SERVICE_STATUS_NATIVE= ${SERVICE_STATUS_NATIVE}"
-                        ps -ef | grep src/service.py | grep -v grep | awk '{print $2}' | xargs kill -9 >/dev/null 2>&1
+			SERVICE_STATUS_NATIVE=$(ps -ef | grep service.py | grep -v grep | awk '{print $2}')
+			echo "Before SERVICE_STATUS_NATIVE= ${SERVICE_STATUS_NATIVE}"
+			ps -ef | grep src/service.py | grep -v grep | awk '{print $2}' | xargs kill -9 >/dev/null 2>&1
 
 			echo "Starting hpo with  ./deploy_hpo.sh -c ${CLUSTER_TYPE} -p 8092 --rest"
 			echo
@@ -188,10 +204,42 @@ function hpo_experiments() {
 	echo "Start a new experiment with search space json"
 	## Step 1 : Start a new experiment with provided search space.
 	echo "curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}'"
-	http_response=$(curl -o response.txt -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}')
-	if [ "$http_response" != "200" ]; then
-		err_exit "Error:" $(cat response.txt)
-	fi
+	#http_response=$(curl -v --connect-timeout 60 -w "%{http_code}" -H 'Content-Type: application/json' ${URL}/experiment_trials -d '{ "operation": "EXP_TRIAL_GENERATE_NEW",  "search_space": '"${exp_json}"'}')
+	#http_code=$(curl -s -v --connect-timeout 60 --max-time 120 -H 'Content-Type: application/json' -H 'Expect:' -o response_body.txt -w "%{http_code}" -d "{ \"operation\": \"EXP_TRIAL_GENERATE_NEW\", \"search_space\": ${exp_json}}"   "${URL}/experiment_trials")
+	response_file="response_body.txt"
+debug_file="curl_debug.log"
+
+http_code=$(curl -sS -v \
+  --connect-timeout 60 \
+  --max-time 120 \
+  -H 'Content-Type: application/json' \
+  -H 'Expect:' \
+  -o "$response_file" \
+  -w "%{http_code}" \
+  -X POST \
+  -d "{ \"operation\": \"EXP_TRIAL_GENERATE_NEW\", \"search_space\": ${exp_json} }" \
+  "${URL}/experiment_trials" \
+  2> "$debug_file")
+
+# Check response
+if [[ "$http_code" -ne 200 ]]; then
+    echo "❌ Request failed with HTTP code: $http_code"
+    
+    echo "----- Response Body -----"
+    cat "$response_file"
+    
+    echo "----- Curl Debug (verbose) -----"
+    cat "$debug_file"
+    
+    	err_exit "Error:" $(cat response.txt)
+fi
+	  
+
+	#cat response.txt
+	#echo ${http_response}
+	#if [ "$http_response" != "200" ]; then
+	#	err_exit "Error:" $(cat response.txt)
+	#fi
 
 	## Looping through trials of an experiment
 	echo
@@ -473,3 +521,4 @@ else
 	fi
 	hpo_cleanup
 fi
+
