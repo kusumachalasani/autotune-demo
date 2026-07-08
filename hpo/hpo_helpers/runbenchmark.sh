@@ -111,7 +111,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	      query=${query%&}
 	      jobUrl="https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/buildWithParameters?$query"
         else
-	      JENKINS_SETUP_TOKEN=2018
+	      JENKINS_SETUP_TOKEN="web"
 	      declare -A params
 	      params=(
 		      ["token"]="${JENKINS_SETUP_TOKEN}"
