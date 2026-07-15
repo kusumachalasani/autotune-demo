@@ -120,6 +120,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
                       ["ENV_OPTIONS"]="${envoptions//\"/}"
 					  ["PERF_SCENARIOS"]="observability-on"
 					  ["OBSERVABILITY_REPO_COMMIT"]="quarkus-3-34-2"
+					  ["UPLOAD_RESULTS"]="true"
 					  
               )
               # Initialize an empty string for the encoded query
