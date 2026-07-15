@@ -75,7 +75,7 @@
     {
       "name": "gc",
       "value_type": "categorical",
-      "choices": ["G1GC","ParallelGC","SerialGC","ShenandoahGC","ZGC"]
+      "choices": ["G1GC","ParallelGC","ShenandoahGC","ZGC"]
     },
     {
       "name": "LockMinHeap",
