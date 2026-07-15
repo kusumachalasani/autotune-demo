@@ -121,7 +121,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 					  ["PERF_SCENARIOS"]="observability-on"
 					  ["OBSERVABILITY_REPO_COMMIT"]="quarkus-3-34-2"
 					  ["UPLOAD_RESULTS"]="true"
-					  
+					  ["SERVER_MEMORY"]="2048m"
               )
               # Initialize an empty string for the encoded query
               query=""
