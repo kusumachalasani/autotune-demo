@@ -21,44 +21,37 @@
     {
       "name": "server_memory",
       "value_type": "integer",
-      "upper_bound": 2048,
+      "upper_bound": 4096,
       "lower_bound": 256,
-      "step": 178 
+      "step": 256 
     },
     {
       "name": "batch_size",
       "value_type": "integer",
-      "upper_bound": 1024,
+      "upper_bound": 2048,
       "lower_bound": 128,
-      "step": 89 
+      "step": 128 
     },
     {
       "name": "sampler_arg",
       "value_type": "double",
       "upper_bound": 0.5,
       "lower_bound": 0.01,
-      "step": 0.049
+      "step": 0.01
     },
     {
       "name": "quarkus.thread-pool.queue-size",
       "value_type": "integer",
-      "upper_bound": 10001,
-      "lower_bound": 1,
+      "upper_bound": 1000,
+      "lower_bound": 10,
       "step": 10
-    },
-    {
-      "name": "quarkus.datasource.jdbc.min-size",
-      "value_type": "integer",
-      "upper_bound": 12,
-      "lower_bound": 1,
-      "step": 1
     },
     {
       "name": "quarkus.datasource.jdbc.max-size",
       "value_type": "integer",
-      "upper_bound": 90,
-      "lower_bound": 12,
-      "step": 1
+      "upper_bound": 1000,
+      "lower_bound": 10,
+      "step": 10
     },
     {
       "name": "quarkus.hibernate-orm.jdbc.statement-fetch-size",
@@ -75,17 +68,7 @@
     {
       "name": "gc",
       "value_type": "categorical",
-      "choices": ["G1GC","ParallelGC","ShenandoahGC","ZGC"]
-    },
-    {
-      "name": "LockMinHeap",
-      "value_type": "categorical",
-      "choices": ["true", "false"]
-    },
-    {
-      "name": "LockMaxHeap",
-      "value_type": "categorical",
-      "choices": ["true", "false"]
+      "choices": ["G1GC","ParallelGC","SerialGC","ShenandoahGC","ZGC"]
     },
     {
       "name": "AlwaysPreTouch",
