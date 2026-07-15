@@ -3,17 +3,17 @@
   "experiment_id": "q001",
   "total_trials": 2,
   "parallel_trials":1,
-  "objective_function": "Get_Legume_Requests / Get_Legume_99%_Percentile_ms",
+  "objective_function": "Get Legume Requests / Get Legume 99% Percentile ms",
   "value_type": "double",
   "hpo_algo_impl": "optuna_tpe",
   "direction": "maximize",
   "function_variables": [
     {
-      "name": "Get_Legume_Requests",
+      "name": "Get Legume Requests",
       "value_type": "double"
     },
     {
-      "name": "Get_Legume_99%_Percentile_ms",
+      "name": "Get Legume 99% Percentile ms",
       "value_type": "double"
     }
   ],
