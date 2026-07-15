@@ -116,8 +116,8 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	      params=(
 		      ["token"]="${JENKINS_SETUP_TOKEN}"
                       ["BRANCH"]="${GIT_REPO_COMMIT}"
-                      ["SERVER_OPTS"]="${jdkoptions}"
-                      ["ENV_OPTIONS"]="${envoptions}"
+                      ["SERVER_OPTS"]="${jdkoptions//\"/}"
+                      ["ENV_OPTIONS"]="${envoptions//\"/}"
 					  ["PERF_SCENARIOS"]="observability-on"
 					  ["OBSERVABILITY_REPO_COMMIT"]="quarkus-3-34-2"
 					  
