@@ -72,17 +72,18 @@ def get_jdkoptions(hpoconfigjson):
                     JDK_JAVA_OPTIONS = JDK_JAVA_OPTIONS + " -D" + qtunable + "=" + str(st["tunable_value"]) + " -Dquarkus.datasource.jdbc.initial-size=" + str(st["tunable_value"])
                 elif qtunable == "quarkus.http.io-threads":
                     if st["tunable_value"] == "true":
-                        # Get cpu request value and use it. If cpurequest is not set, do not do anything.
-                        #import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"cpuRequest\")"
+                        # Get cpu request value and use it. If cpurequest is not set, use the tunable value and continue.
                         old_stdout = sys.stdout
                         new_stdout = StringIO()
                         sys.stdout = new_stdout
                         get_tunablevalue("hpo_config.json", "cpuRequest")
-                        cpu_req = new_stdout.getvalue()
+                        cpu_req = new_stdout.getvalue().strip()
                         sys.stdout = old_stdout
-                        cpu_value = int(float(cpu_req))
-                        if cpu_value != "":
-                            JDK_JAVA_OPTIONS = JDK_JAVA_OPTIONS + " -Dhttp.io.threads=" + str(cpu_value)
+                        if cpu_req:
+                            io_threads_value = int(float(cpu_req))
+                        else:
+                            io_threads_value = st["tunable_value"]
+                        JDK_JAVA_OPTIONS = JDK_JAVA_OPTIONS + " -Dhttp.io.threads=" + str(io_threads_value)
                 else:
                     JDK_JAVA_OPTIONS = JDK_JAVA_OPTIONS + " -D" + qtunable + "=" + str(st["tunable_value"])
 
