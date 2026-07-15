@@ -19,42 +19,9 @@
   ],
   "tunables": [
     {
-      "name": "quarkus.thread-pool.queue-size",
-      "value_type": "integer",
-      "upper_bound": 10001,
-      "lower_bound": 1,
-      "step": 10
-    },
-    {
-      "name": "quarkus.datasource.jdbc.min-size",
-      "value_type": "integer",
-      "upper_bound": 12,
-      "lower_bound": 1,
-      "step": 1
-    },
-    {
-      "name": "quarkus.datasource.jdbc.max-size",
-      "value_type": "integer",
-      "upper_bound": 90,
-      "lower_bound": 12,
-      "step": 1
-    },
-    {
-      "name": "quarkus.hibernate-orm.jdbc.statement-fetch-size",
-      "value_type": "integer",
-      "upper_bound": 50,
-      "lower_bound": 1,
-      "step": 1
-    },
-    {
-      "name": "quarkus.http.io-threads",
-      "value_type": "categorical",
-      "choices": ["true","false"]
-    },
-    {
       "name": "gc",
       "value_type": "categorical",
-      "choices": ["G1GC","ParallelGC","SerialGC","ShenandoahGC","ZGC"]
+      "choices": ["G1GC","ParallelGC"]
     }
      ]
 }
