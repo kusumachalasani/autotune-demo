@@ -39,13 +39,13 @@ LOGFILE="${PWD}/hpo.log"
 BENCHMARK_LOGFILE="${PWD}/benchmark.log"
 HPO_RESULTS_DIR="${PWD}/results"
 
-cpu_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"cpuRequest\")")
-memory_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"memoryRequest\")")
+cpu_request=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"cpuRequest\") or '')")
+memory_request=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"memoryRequest\") or '')")
 jdkoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_jdkoptions(\"hpo_config.json\")")
 envoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_envoptions(\"hpo_config.json\")")
-server_memory=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"server_memory\")")
-batch_size=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"batch_size\")")
-sampler_arg=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"sampler_arg\")")
+server_memory=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"server_memory\") or '')")
+batch_size=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"batch_size\") or '')")
+sampler_arg=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"sampler_arg\") or '')")
 
 if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	if [[ ${BENCHMARK_NAME} == "techempower" ]]; then
