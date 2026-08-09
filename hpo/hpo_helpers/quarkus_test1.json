@@ -1,0 +1,87 @@
+{
+  "experiment_name": "quarkus_otel_response_time_hpo",
+  "experiment_id": "q001",
+  "total_trials": 2,
+  "parallel_trials":1,
+  "objective_function": "Get Legume Requests / Get Legume 99% Percentile ms",
+  "value_type": "double",
+  "hpo_algo_impl": "optuna_tpe",
+  "direction": "maximize",
+  "function_variables": [
+    {
+      "name": "Get Legume Requests",
+      "value_type": "double"
+    },
+    {
+      "name": "Get Legume 99% Percentile ms",
+      "value_type": "double"
+    }
+  ],
+  "tunables": [
+    {
+      "name": "server_memory",
+      "value_type": "integer",
+      "upper_bound": 4096,
+      "lower_bound": 256,
+      "step": 256 
+    },
+    {
+      "name": "batch_size",
+      "value_type": "integer",
+      "upper_bound": 2048,
+      "lower_bound": 128,
+      "step": 128 
+    },
+    {
+      "name": "sampler_arg",
+      "value_type": "double",
+      "upper_bound": 0.5,
+      "lower_bound": 0.01,
+      "step": 0.01
+    },
+    {
+      "name": "quarkus.thread-pool.queue-size",
+      "value_type": "integer",
+      "upper_bound": 1000,
+      "lower_bound": 10,
+      "step": 10
+    },
+    {
+      "name": "quarkus.datasource.jdbc.max-size",
+      "value_type": "integer",
+      "upper_bound": 1000,
+      "lower_bound": 10,
+      "step": 10
+    },
+    {
+      "name": "quarkus.hibernate-orm.jdbc.statement-fetch-size",
+      "value_type": "integer",
+      "upper_bound": 50,
+      "lower_bound": 1,
+      "step": 1
+    },
+    {
+      "name": "quarkus.http.io-threads",
+      "value_type": "categorical",
+      "choices": ["true","false"]
+    },
+    {
+      "name": "gc",
+      "value_type": "categorical",
+      "choices": ["G1GC","ParallelGC","SerialGC","ShenandoahGC","ZGC"]
+    },
+    {
+      "name": "AlwaysPreTouch",
+      "value_type": "categorical",
+      "choices": ["true", "false"]
+    },
+    {
+      "name": "StackTraceInThrowable",
+      "value_type": "categorical",
+      "choices": ["true", "false"]
+    }
+     ]
+}
+
+
+
