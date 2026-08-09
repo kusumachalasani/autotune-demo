@@ -119,7 +119,8 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
                       ["SERVER_OPTS"]="${jdkoptions//\"/}"
                       ["ENV_OPTIONS"]="${envoptions//\"/}"
 					  ["PERF_SCENARIOS"]="observability-on"
-					  ["OBSERVABILITY_REPO_COMMIT"]="quarkus-3-34-2"
+					  ["OBSERVABILITY_REPO_COMMIT"]="cleanup"
+					  ["OBSERVABILITY_REPO_URL"]="${JENKINS_GIT_REPO_COMMIT}"
 					  ["UPLOAD_RESULTS"]="true"
 					  ["SERVER_MEMORY"]="2048m"
               )
