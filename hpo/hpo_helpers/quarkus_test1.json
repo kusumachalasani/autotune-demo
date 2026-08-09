@@ -1,7 +1,7 @@
 {
   "experiment_name": "quarkus_otel_response_time_hpo",
   "experiment_id": "q001",
-  "total_trials": 150,
+  "total_trials": 200,
   "parallel_trials":1,
   "objective_function": "Get Legume Requests / Get Legume 99% Percentile ms",
   "value_type": "double",
