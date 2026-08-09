@@ -40,6 +40,10 @@ def get_jdkoptions(hpoconfigjson):
     with open(hpoconfigjson) as data_file:
         sstunables = json.load(data_file)
 
+    server_memory = get_tunablevalue(hpoconfigjson, "server_memory")
+    if server_memory is not None:
+        JDK_JAVA_OPTIONS = JDK_JAVA_OPTIONS + " -Xms" + str(server_memory) + "m"
+
     for st in sstunables:
         for btunable in tunables_jvm_categorical:
             if btunable == st["tunable_name"]:

@@ -43,6 +43,9 @@ cpu_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tuna
 memory_request=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"memoryRequest\")")
 jdkoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_jdkoptions(\"hpo_config.json\")")
 envoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_envoptions(\"hpo_config.json\")")
+server_memory=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"server_memory\")")
+batch_size=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"batch_size\")")
+sampler_arg=$(${PY_CMD} -c "import hpo_helpers.utils; hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"sampler_arg\")")
 
 if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	if [[ ${BENCHMARK_NAME} == "techempower" ]]; then
@@ -122,7 +125,9 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 					  ["OBSERVABILITY_REPO_COMMIT"]="cleanup"
 					  ["OBSERVABILITY_REPO_URL"]="${JENKINS_GIT_REPO_COMMIT}"
 					  ["UPLOAD_RESULTS"]="true"
-					  ["SERVER_MEMORY"]="2048m"
+					  ["SERVER_MEMORY"]="${server_memory}m"
+					  ["BATCH_SIZE"]="${batch_size}"
+					  ["SAMPLER_ARG"]="${sampler_arg}"
               )
               # Initialize an empty string for the encoded query
               query=""
