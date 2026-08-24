@@ -210,8 +210,8 @@ function hpo_experiments() {
 debug_file="curl_debug.log"
 
 http_code=$(curl -sS -v \
-  --connect-timeout 60 \
-  --max-time 120 \
+  --connect-timeout 180 \
+  --max-time 180 \
   -H 'Content-Type: application/json' \
   -H 'Expect:' \
   -o "$response_file" \
