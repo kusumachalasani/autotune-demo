@@ -270,13 +270,13 @@ fi
 		echo ${BENCHMARK_OUTPUT}
 		obj_result=$(echo ${BENCHMARK_OUTPUT} | awk '{for(i=1;i<=NF;i++) if($i ~ /^Objfunc_result=/) {split($i,a,"="); print a[2]}}')
 		trial_state=$(echo ${BENCHMARK_OUTPUT} | awk '{for(i=1;i<=NF;i++) if($i ~ /^Benchmark_status=/) {split($i,a,"="); print a[2]}}')
-		### Setting obj_result=0 and trial_state="failure" to contine the experiment if obj_result is nan or trial_state is empty because of any issue with benchmark output.
+		### Setting obj_result=0 and trial_state="error" to contine the experiment if obj_result is nan or trial_state is empty because of any issue with benchmark output.
 		number_check='^[0-9,.]+$'
 		if ! [[ ${obj_result} =~  ${number_check} ]]; then
 			obj_result=0
-			trial_state="failure"
+			trial_state="error"
 		elif [[ ${trial_state} == "" ]]; then
-			trial_state="failure"
+			trial_state="error"
 		fi
 
 		## Only for now: To avoid mising results incase the HPO is aborted

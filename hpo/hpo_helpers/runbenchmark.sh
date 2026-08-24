@@ -43,6 +43,7 @@ cpu_request=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.ge
 memory_request=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"memoryRequest\") or '')")
 jdkoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_jdkoptions(\"hpo_config.json\")")
 envoptions=$(${PY_CMD} -c "import hpo_helpers.getenvoptions; hpo_helpers.getenvoptions.get_envoptions(\"hpo_config.json\")")
+slsb_factor=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"SLSB_FACTOR\") or '')")
 server_memory=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"server_memory\") or '')")
 batch_size=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"batch_size\") or '')")
 sampler_arg=$(${PY_CMD} -c "import hpo_helpers.utils; print(hpo_helpers.utils.get_tunablevalue(\"hpo_config.json\", \"sampler_arg\") or '')")
@@ -113,34 +114,56 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	      # Remove the trailing '&'
 	      query=${query%&}
 	      jobUrl="https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/buildWithParameters?$query"
-        else
-	      JENKINS_SETUP_TOKEN="web"
-	      declare -A params
-	      params=(
-		      ["token"]="${JENKINS_SETUP_TOKEN}"
-                      ["BRANCH"]="${GIT_REPO_COMMIT}"
-                      ["SERVER_OPTS"]="${jdkoptions//\"/}"
-                      ["ENV_OPTIONS"]="${envoptions//\"/}"
-					  ["PERF_SCENARIOS"]="observability-on"
-					  ["OBSERVABILITY_REPO_COMMIT"]="cleanup"
-					  ["OBSERVABILITY_REPO_URL"]="${JENKINS_GIT_REPO_COMMIT}"
-					  ["UPLOAD_RESULTS"]="true"
-					  ["SERVER_MEMORY"]="${server_memory}m"
-					  ["BATCH_SIZE"]="${batch_size}"
-					  ["SAMPLER_ARG"]="${sampler_arg}"
-              )
-              # Initialize an empty string for the encoded query
-              query=""
-              # Loop through the parameters and encode each key and value
-              for key in "${!params[@]}"; do
-                      encoded_key=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''$key'''))")
-                      encoded_value=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''${params[$key]}'''))")
-                      query+="${encoded_key}=${encoded_value}&"
-              done
-              # Remove the trailing '&'
-              query=${query%&}
-              jobUrl="https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/buildWithParameters?$query"
-	fi
+	       else
+			declare -A params
+       
+			if [[ ${BENCHMARK_NAME} == "eap-standalone-web-hyperfoil" ]]; then
+       			jdkoptions="-Xmx16g -Xms16g -XX:+UseLargePages -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true ${jdkoptions}"
+				JENKINS_SETUP_TOKEN=2018
+				params=(
+        			["token"]="${JENKINS_SETUP_TOKEN}"
+        			["BRANCH"]="${JENKINS_GIT_REPO_COMMIT}"
+        			["JVM_TUNABLES"]="${jdkoptions//\"/}"
+        			["SLSB_FACTOR"]="${slsb_factor//\"/}"
+       				)
+			elif [[ ${BENCHMARK_NAME} == "OTel-Quarkus-Observability-Perf" ]]; then
+				JENKINS_SETUP_TOKEN="web"
+				params=(
+					["token"]="${JENKINS_SETUP_TOKEN}"
+					["BRANCH"]="${GIT_REPO_COMMIT}"
+					["SERVER_OPTS"]="${jdkoptions//\"/}"
+					["ENV_OPTIONS"]="${envoptions//\"/}"
+					["PERF_SCENARIOS"]="observability-on"
+					["OBSERVABILITY_REPO_COMMIT"]="cleanup"
+					["OBSERVABILITY_REPO_URL"]="${JENKINS_GIT_REPO_COMMIT}"
+					["UPLOAD_RESULTS"]="true"
+					["SERVER_MEMORY"]="${server_memory}m"
+					["BATCH_SIZE"]="${batch_size}"
+					["SAMPLER_ARG"]="${sampler_arg}"
+				)
+			else
+
+				JENKINS_SETUP_TOKEN=""
+				params=(
+					["token"]="${JENKINS_SETUP_TOKEN}"
+					["BRANCH"]="${GIT_REPO_COMMIT}"
+					["JVM_TUNABLES"]="${jdkoptions//\"/}"
+					["ENV_OPTIONS"]="${envoptions//\"/}"
+					
+				)
+			fi
+			# Initialize an empty string for the encoded query
+			query=""
+			# Loop through the parameters and encode each key and value
+			for key in "${!params[@]}"; do
+					encoded_key=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''$key'''))")
+					encoded_value=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''${params[$key]}'''))")
+					query+="${encoded_key}=${encoded_value}&"
+			done
+			# Remove the trailing '&'
+			query=${query%&}
+			jobUrl="https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/buildWithParameters?$query"
+		fi
 
 	# Print the constructed URL (for debugging)
 	echo "Constructed Job URL: ${jobUrl}"
@@ -261,12 +284,12 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 		if [[ ${objfunc_result} != "-1" ]]; then
 			benchmark_status="success"
 		else
-			benchmark_status="failure"
+			benchmark_status="error"
 			objfunc_result=0
 			echo "Error calculating the objective function result value" >> ${LOGFILE}
 		fi
 	else
-		benchmark_status="failure"
+		benchmark_status="error"
 		objfunc_result=0
 	fi
 	### Add the HPO config and output data from benchmark of all trials into single csv
@@ -309,11 +332,11 @@ elif [[ ${BENCHMARK_RUN_THRU} == "standalone" ]]; then
 			if [[ ${objfunc_result} != "-1" ]]; then
 				benchmark_status="success"
 			else
-				benchmark_status="failure"
+				benchmark_status="error"
 				echo "Error calculating the objective function result value" >> ${LOGFILE}
 			fi
 		else
-			benchmark_status="failure"
+			benchmark_status="error"
 		fi
 
 		if [[ ${benchmark_status} == "failure" ]];then
@@ -326,7 +349,7 @@ elif [[ ${BENCHMARK_RUN_THRU} == "standalone" ]]; then
 		rm -rf output.csv
 
 	else
-		benchmark_status="failure"
+		benchmark_status="error"
 	        objfunc_result=0
 
 	fi
