@@ -432,8 +432,8 @@ DURATION=60
 BENCHMARK_CLUSTER="minikube"
 BENCHMARK_SERVER="localhost"
 BENCHMARK_RUN_THRU="standalone"
-BENCHMARK_NAME="specj"
-SEARCHSPACE_JSON="hpo_helpers/specj_eap8_jvm21.json"
+BENCHMARK_NAME="techempower"
+SEARCHSPACE_JSON="hpo_helpers/tfb_qrh_search_space.json"
 
 # By default we start the demo & experiment and we dont expose prometheus port
 prometheus=0

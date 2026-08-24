@@ -112,24 +112,15 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	      jobUrl="https://${JENKINS_MACHINE_NAME}:${JENKINS_EXPOSED_PORT}/job/${JENKINS_SETUP_JOB}/buildWithParameters?$query"
         else
 	      if [[ ${BENCHMARK_NAME} == "eap-standalone-web-hyperfoil" ]]; then
-	       JENKINS_SETUP_TOKEN=2018
+		      JENKINS_SETUP_TOKEN=2018
 	      fi
 	      declare -A params
-	      if [[ ${BENCHMARK_NAME} == "specj" ]]; then
-	       params=(
-	        ["token"]="${JENKINS_SETUP_TOKEN}"
-	        ["BRANCH"]="${JENKINS_GIT_REPO_COMMIT}"
-	        ["JVM_TUNABLES"]="${jdkoptions//\"/}"
-	        ["ENV_OPTIONS"]="${envoptions//\"/}"
-	       )
-	      else
-	       params=(
-	        ["token"]="${JENKINS_SETUP_TOKEN}"
-	        ["BRANCH"]="${JENKINS_GIT_REPO_COMMIT}"
-	        ["JVM_TUNABLES"]="${jdkoptions//\"/}"
-	        ["ENV_OPTIONS"]="${envoptions//\"/}"
-	       )
-	      fi
+	      params=(
+		      ["token"]="${JENKINS_SETUP_TOKEN}"
+			  ["BRANCH"]="${JENKINS_GIT_REPO_COMMIT}"
+			  ["JVM_TUNABLES"]="${jdkoptions//\"/}"
+			  ["ENV_OPTIONS"]="${envoptions//\"/}"
+              )
               # Initialize an empty string for the encoded query
               query=""
               # Loop through the parameters and encode each key and value
