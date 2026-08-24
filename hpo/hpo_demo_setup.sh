@@ -274,9 +274,11 @@ fi
 		number_check='^[0-9,.]+$'
 		if ! [[ ${obj_result} =~  ${number_check} ]]; then
 			obj_result=0
-			trial_state="failure"
+			#Updating it from failure to error for Optuna to consider this config doesn't work and not ignore
+			trial_state="error"
 		elif [[ ${trial_state} == "" ]]; then
-			trial_state="failure"
+			trial_state="error"
+			obj_result=0
 		fi
 
 		## Only for now: To avoid mising results incase the HPO is aborted

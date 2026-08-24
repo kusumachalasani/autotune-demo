@@ -1,11 +1,11 @@
 {
     "experiment_name": "specj_eap8_jvm21_1",
     "experiment_id": "specj_eap8_jvm21_1",
-    "total_trials": 2,
+    "total_trials": 200,
     "parallel_trials": 1,
     "objective_function": "1000 * (specjweb_hf_WebjOPS **1) / (Rapl_Avg_Watts **2)",
     "value_type": "float",
-    "hpo_algo_impl": "optuna_tpe",
+    "hpo_algo_impl": "optuna_tpe_multivariate",
     "direction": "maximize",
     "function_variables": [
         {

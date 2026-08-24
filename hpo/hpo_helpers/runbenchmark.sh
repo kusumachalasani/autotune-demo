@@ -260,12 +260,12 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 		if [[ ${objfunc_result} != "-1" ]]; then
 			benchmark_status="success"
 		else
-			benchmark_status="failure"
+			benchmark_status="error"
 			objfunc_result=0
 			echo "Error calculating the objective function result value" >> ${LOGFILE}
 		fi
  	else
-		benchmark_status="failure"
+		benchmark_status="error"
   		if [[ "$JOB_RESULT" == "FAILURE" ]]; then
 			objfunc_result=0 		
 		elif [[ "$JOB_RESULT" == "ABORTED" ]]; then
@@ -312,14 +312,14 @@ elif [[ ${BENCHMARK_RUN_THRU} == "standalone" ]]; then
 			if [[ ${objfunc_result} != "-1" ]]; then
 				benchmark_status="success"
 			else
-				benchmark_status="failure"
+				benchmark_status="error"
 				echo "Error calculating the objective function result value" >> ${LOGFILE}
 			fi
 		else
-			benchmark_status="failure"
+			benchmark_status="error"
 		fi
 
-		if [[ ${benchmark_status} == "failure" ]];then
+		if [[ ${benchmark_status} == "error" ]];then
 			objfunc_result=0
 		fi
 		### Add the HPO config and output data from benchmark of all trials into single csv
@@ -329,7 +329,7 @@ elif [[ ${BENCHMARK_RUN_THRU} == "standalone" ]]; then
 		rm -rf output.csv
 
 	else
-		benchmark_status="failure"
+		benchmark_status="error"
 	        objfunc_result=0
 
 	fi
