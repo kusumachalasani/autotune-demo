@@ -20,7 +20,7 @@
     "tunables": [
         {
             "name": "SLSB_FACTOR",
-            "value_type": "float",
+            "value_type": "double",
             "upper_bound": 0.04,
             "lower_bound": 0.025,
             "step": 0.001
