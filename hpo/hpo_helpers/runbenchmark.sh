@@ -152,12 +152,12 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 	location=$(echo "$response" | grep -i "Location:" | awk '{print $2}' | tr -d '\r')
 	queueId=$(basename "$location")
 	echo "queueId=${queueId}"
-	TIMEOUT=6i0
+	TIMEOUT=600
 	run_id=""
 	START_TIME=$(date +%s)
 	if [ -z "${queueId}" ]; then
 		echo "Failed to retrieve queueId. Check if the job was triggered successfully."
-		JOB_COMPLETE = "invalid"
+		JOB_COMPLETE="invalid"
 	else
 		while true; do
 			#current_time=$(date +%s)
@@ -185,7 +185,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 					echo "run_id=${JENKINS_RUN_ID}"
 				else
 					echo "Couldn't find the run_id for queue_id=${queueId}"
-					JOB_COMPLETE = "invalid"
+					JOB_COMPLETE="invalid"
 				fi
 				break
 			fi

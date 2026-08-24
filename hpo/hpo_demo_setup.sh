@@ -293,7 +293,7 @@ fi
 		echo
 		sleep 5
 		## Step 5 : Generate a subsequent trial
-		if (( i < ${ttrial} - 1 )); then
+		if (( i < ${ttrials} - 1 )); then
 			echo "#######################################"
 			echo
 			echo "Generate subsequent trial of ${i}"
