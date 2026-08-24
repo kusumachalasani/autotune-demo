@@ -109,6 +109,7 @@ function hpo_install() {
     if [ -d "hpo" ]; then
         echo "Found existing hpo directory. Removing it to pull your custom local branch..."
         rm -rf hpo
+	rm -rf hpo
     fi
 
     # 2. Clone from your local repository using the specified branch
@@ -210,8 +211,8 @@ function hpo_experiments() {
 debug_file="curl_debug.log"
 
 http_code=$(curl -sS -v \
-  --connect-timeout 60 \
-  --max-time 120 \
+  --connect-timeout 180 \
+  --max-time 180 \
   -H 'Content-Type: application/json' \
   -H 'Expect:' \
   -o "$response_file" \
