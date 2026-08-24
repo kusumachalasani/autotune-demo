@@ -269,7 +269,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
   		if [[ "$JOB_RESULT" == "FAILURE" ]]; then
 			objfunc_result=0 		
 		elif [[ "$JOB_RESULT" == "ABORTED" ]]; then
-	 		objfunc_result=-1
+	 		objfunc_result=0
 		fi
 	fi
 	### Add the HPO config and output data from benchmark of all trials into single csv
