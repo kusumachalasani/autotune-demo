@@ -139,7 +139,7 @@ if [[ ${BENCHMARK_RUN_THRU} == "jenkins" ]]; then
 					["UPLOAD_RESULTS"]="true"
 					["SERVER_MEMORY"]="${server_memory}m"
 					["BATCH_SIZE"]="${batch_size}"
-					["SAMPLER_ARG"]="${sampler_arg}"
+					["SAMPLER_ARG"]="0.01" #${sampler_arg}
 				)
 			else
 
